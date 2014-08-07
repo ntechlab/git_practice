@@ -36,6 +36,10 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  '/hi' : {
+	  controller: 'hello',
+	  action: 'index'
+  }
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

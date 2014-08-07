@@ -1,0 +1,10 @@
+<div>
+  <h1>My first view</h1>
+
+  <h2 id="toc-users">Users:</h2>
+  <ul>
+    <% _.each(users, function (user) { %>
+    <li><%= user.id %></li>
+    <% }) %>
+  </ul>
+</div>

@@ -22,9 +22,13 @@ module.exports = {
 		// リクエストに格納されているsocketを購読者として登録。？？？
 		User.watch(req.socket);
 
+		// リクエストに格納されているsocketを購読者として登録。？？？
+		Chat.watch(req.socket);
+
 		// すべての購読者に対してメッセージを発行する。
 		User.publishCreate({
 			id : req.param('userID'),
+			chatterId : req.param('userID'),
 			param: 'ダミー'
 		});
 	}

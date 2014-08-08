@@ -1,9 +1,16 @@
 <h2>Talking Spot</h2>
 <h3>Chatter ID:<%= id %></h3>
-<div id='message_area'>
+
+<div id='checkin_area' style="background-color:#dfd">
+	<ul id='checkin_list'>
+	</ul>
+</div>
+
+<div id='message_area' >
 	<ul id='message_list'>
 	</ul>
 </div>
+
 <div>
 	<input type='text' id='message'></input>
 	<input type='button' id='send' value='送信'></input>
@@ -21,11 +28,27 @@ $(function(){
 	io.socket.get('/room/checkin',{'userID':<%= id %>},function(res){
 	});
 	io.socket.on('user',function(msg) {
-		console.log("★発行されたメッセージ:");
+		console.log("★user 発行されたメッセージ:");
 	  	console.dir(msg)
 	  	console.log("param="+msg['data']['param']);
-		var checkinMessage = 'In!!:'+msg['id'];
-		alert(checkinMessage);
+		var checkinMessage = '<li>' + msg['id'] + 'が入室</li>';
+		$('#checkin_list').append(checkinMessage);
+	});
+
+	io.socket.on('chat',function(msg) {
+		console.log("★chat 発行されたメッセージ:");
+		var chatMessage = '<li>'+msg['data']['chatterId']+':'+msg['data']['message']+'</li>';
+		$('#message_list').append(chatMessage);
+	});
+
+	$('#send').click(function() { //メッセージの送信
+		io.socket.post('/chat/say',
+			{ id: <%= id %>,
+			  'chatterId' : <%= id %>,
+			  'message' : $('#message').val()},
+			function(res){});
+
+		$('#message').val('');
 	});
 });
 </script>

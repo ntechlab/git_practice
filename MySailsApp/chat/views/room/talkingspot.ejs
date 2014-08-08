@@ -1,0 +1,31 @@
+<h2>Talking Spot</h2>
+<h3>Chatter ID:<%= id %></h3>
+<div id='message_area'>
+	<ul id='message_list'>
+	</ul>
+</div>
+<div>
+	<input type='text' id='message'></input>
+	<input type='button' id='send' value='送信'></input>
+</div>
+
+<!-- 以下の領域にlinkerによって自動的にjsのパスが追加される。-->
+<!--SCRIPTS-->
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/dependencies/jquery-2.1.1.min.js"></script>
+<!--SCRIPTS END-->
+
+<script type="text/javascript">
+// HTMLオンロード時に実行する処理
+$(function(){
+	io.socket.get('/room/checkin',{'userID':<%= id %>},function(res){
+	});
+	io.socket.on('user',function(msg) {
+		console.log("★発行されたメッセージ:");
+	  	console.dir(msg)
+	  	console.log("param="+msg['data']['param']);
+		var checkinMessage = 'In!!:'+msg['id'];
+		alert(checkinMessage);
+	});
+});
+</script>

@@ -1,0 +1,6 @@
+Publish-Subscribeモデル
+
+参考：http://tech-sketch.jp/2013/11/sailspubsub.html
+
+注意：
+Sailsのバージョンが0.10になったときにsocket.io関連のAPIが大きく変わっている。

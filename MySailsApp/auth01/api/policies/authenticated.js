@@ -5,5 +5,5 @@ module.exports = function(req, res, next) {
 		return res.send(403, {
 			message : 'Not Authorized'
 		});
-	}
+	};
 }

@@ -1,17 +1,61 @@
-<h1>memo</h1>
-<table border="1">
+<script>
+	// チケットの削除
+	function deleteTicket(id){
+		console.log("delete:"+id);
+		$('#actionType').val("delete");
+		$('#targetId').val(id);
+		$('#myform').submit();
+		return false;
+	};
+
+	// チケットの修正
+	function modifyTicket(id){
+		console.log("modify:"+id);
+		var modText = $('textarea[id='+id+']').val();
+		$('#actionType').val("modify");
+		$('#targetId').val(id);
+		$('#modText').val(modText);
+		$('#myform').submit();
+		return false;
+	}
+
+	// チケット作成
+	function createTicket(){
+		console.log("create");
+		$('#actionType').val("create");
+		$('#myform').submit();
+		return false;
+	}
+
+</script>
+<h1>チケットリスト</h1>
+<form id="myform" method="post" action="/board/ticketCreate">
+	<!-- アクション種別を保持するパラメータ-->
+	<input type="hidden" id="actionType" name="actionType" value=""/>
+
+	<!-- 削除、修正対象チケットのID -->
+	<input type="hidden" id="targetId" name="targetId" value=""/>
+
+	<!-- 修正後のテキストの送信に利用するパラメータ -->
+	<input type="hidden" id="modText" name="modText" value=""/>
+
+	<table border="1">
+		<tr>
+			<th>ID</th><th>削除</th><th>修正</th><th>内容</th>
+		</tr>
 	<% for( var i in list ) {%>
-	<tr>
-		<td><%= list[i].id %></td>
-		<td><a href='/ticket/destroy/<%= list[i].id %>'>delete</a></td>
-		<td><%= list[i].contents %></td>
-	</tr>
-	<% } %>
-</table>
-<form method="post" action="ticketCreate">
+		<tr>
+			<td><%= list[i].id %></td>
+			<td><input type="button" onclick="deleteTicket(<%= list[i].id %>)" value="削除"/></td>
+			<td><input type="button" onclick="modifyTicket(<%= list[i].id %>)" value="修正"/></td>
+			<td><textarea id="<%= list[i].id %>"><%= list[i].contents %></textarea></td>
+		</tr>
+		<% } %>
+	</table>
+	<br>
 	<div>
-		memo<br>
+		新規作成チケットの内容<br>
 		<textarea name="memo"></textarea><br>
-		<input type="submit" value="send"/>
+		<input type="button" value="新規作成" onclick="createTicket()"/>
 	</div>
 </form>

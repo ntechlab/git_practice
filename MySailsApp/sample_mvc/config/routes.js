@@ -34,11 +34,7 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  },
-  '/ticket/destroy/:id' : {
-	action : 'ticketDelete',
-	controller: 'BoardController'
-  }  
+  }
 
   /***************************************************************************
   *                                                                          *

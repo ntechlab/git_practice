@@ -1,3 +1,6 @@
+npm install -g sails
+（※Sailsのインストール時には-g (global)をつける。こうすると、他の場所でもSailが利用可能)
+
 sails new sample_mvc
 cd sample_mvc
 sails generate api Ticket
@@ -5,4 +8,18 @@ sails generate controller board index
 
 view/board/index.ejsを作成
 
+index.ejs内でJQueryを利用するため
+assets/js/dependencies/jquery-2.1.1.min.js
+を配置。
+
 api/controller/Boardcontroller.jsを修正。
+
+api/models/Ticket.jsに属性contentsを追加。
+
+
+sample_mvc直下で以下のコマンドを実行してsailsを起動する：
+sails lift
+
+以下のURLにアクセスするとチケット管理画面が表示される：
+http://localhost:1337/board/index
+

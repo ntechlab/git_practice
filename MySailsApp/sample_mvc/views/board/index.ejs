@@ -1,0 +1,17 @@
+<h1>memo</h1>
+<table border="1">
+	<% for( var i in list ) {%>
+	<tr>
+		<td><%= list[i].id %></td>
+		<td><a href='/ticket/destroy/<%= list[i].id %>'>delete</a></td>
+		<td><%= list[i].contents %></td>
+	</tr>
+	<% } %>
+</table>
+<form method="post" action="ticketCreate">
+	<div>
+		memo<br>
+		<textarea name="memo"></textarea><br>
+		<input type="submit" value="send"/>
+	</div>
+</form>

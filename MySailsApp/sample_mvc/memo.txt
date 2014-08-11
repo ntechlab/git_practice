@@ -1,0 +1,8 @@
+sails new sample_mvc
+cd sample_mvc
+sails generate api Ticket
+sails generate controller board index
+
+view/board/index.ejsを作成
+
+api/controller/Boardcontroller.jsを修正。

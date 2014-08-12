@@ -1,0 +1,45 @@
+【起動方法】
+1. cd sample_mvc
+2. 必要なパッケージのインストール
+npm install
+3. sailsの起動
+sails lift
+4. 画面の確認
+以下のURLにアクセスするとチケット管理画面が表示される：
+http://localhost:1337/board/index
+
+【参考：プロジェクトの作成の流れ】
+
+0. Sailsのインストール （必要に応じて）
+npm install -g sails
+（※Sailsのインストール時には-g (global)をつける。こうすると、他の場所でもSailが利用可能)
+
+1. Sailsプロジェクトのひな形を作成
+sails new sample_mvc
+
+2. コントローラーの作成
+cd sample_mvc
+sails generate controller board index
+api/controller/Boardcontroller.jsを修正。
+
+3. モデルの作成
+sails generate api Ticket
+api/models/Ticket.jsに属性contentsを追加。
+
+4. ビューの作成
+
+4-1. JQueryライブラリの配置
+index.ejs内でJQueryを利用するため
+assets/js/dependencies/jquery-2.1.1.min.js
+を配置。
+
+4-2.　EJSファイルの作成
+views/board/index.ejsを作成
+
+
+【起動方法】に従ってSailsを起動する。
+
+
+
+
+

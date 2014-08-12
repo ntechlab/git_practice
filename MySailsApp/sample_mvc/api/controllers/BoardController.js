@@ -13,16 +13,8 @@ module.exports = {
 	 */
 	index : function(req, res) {
 		console.log("★チケットリストの取得");
-		Ticket.find().exec(function(err, user) {
-			var ret = "";
-			for (var i = 0; i < user.length; i++) {
-				ret += user[i].contents;
-				ret += "<br>";
-			}
-			var param = {
-				list : user
-			};
-			res.view(param);
+		Ticket.find().exec(function(err, users) {
+			res.view({list : users});
 		});
 	},
 

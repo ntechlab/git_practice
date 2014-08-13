@@ -5,6 +5,7 @@
  *              and what it represents here.
  * @docs :: http://sailsjs.org/#!documentation/models
  */
+var crypto = require('crypto');
 
 module.exports = {
 	attributes : {
@@ -28,17 +29,11 @@ module.exports = {
 		}
 	},
 
-	// beforeCreate : function(user, cb) {
-	// bcrypt.genSalt(10, function(err, salt) {
-	// 	bcrypt.hash(user.password, salt, function(err, hash) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 			cb(err);
-	// 		} else {
-	// 			user.password = hash;
-	// 			cb(null, user);
-	// 		}
-	// 	});
-	// });
-	//}
+	beforeCreate : function(user, cb) {
+		var shasum = crypto.createHash('sha1');
+		shasum.update(user.password);
+		var hashed = shasum.digest('hex');
+	 	user.password = hashed;
+		cb(null, user);
+	}
 };

@@ -1,6 +1,6 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy
-//	bcrypt = require('bcrypt');
+	crypto = require('crypto');
 
 passport.serializeUser(function(user, done) {
 	done(null, user[0].id);
@@ -23,16 +23,10 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				message : 'Incorrect User'
 			});
 		}
-		// bcrypt.compare(password, user[0].password, function(err, res) {
-		// 	if (!res) {
-		// 		return done(null, false, {
-		// 			message : 'Invalid Password'
-		// 		});
-		// 	}
-		// 	return done(null, user);
-		// });
-
-		if (password == user[0].password) {
+		var shasum = crypto.createHash('sha1');
+		shasum.update(password);
+		var hashed = shasum.digest('hex');
+		if (hashed === user[0].password) {
 		    console.log("auth OK");
 		    return done(null, user);
 		} else {

@@ -1,0 +1,39 @@
+【mongodb利用の準備】
+
+mongodbのzip版をダウンロードして適当な場所に展開し、binフォルダをPATHに追加する。
+
+mongodbのデータ格納フォルダを作成する。
+
+以下のコマンドでmongodbを起動する：
+mongod --dbpath （データ格納フォルダパス）
+
+別なコマンドプロンプトからmongodbクライアントを起動する。
+mongo
+
+利用するDBを選択：
+use sample01
+
+以下のコマンドでticketコレクションのリストを表示
+db.ticket.find()
+
+以下のコマンドでticketコレクションにデータをインサート：
+db.ticket.insert({name:'name01', message:'MESSAGE01'});
+
+
+【Sail.jsの起動】
+sails.jsのmongoプロジェクト直下に移動
+cd mongo
+
+モジュールのインストール
+npm install
+
+Sails.jsの起動
+sails lift
+
+以下のURLにアクセスして、チケットを新規作成し、mongodbクライアントから確認することができる。
+
+チケットのリスト確認
+http://localhost:1337/ticket
+
+チケット作成
+http://localhost:1337/ticket/create?name=name02&message=MESSAGE02

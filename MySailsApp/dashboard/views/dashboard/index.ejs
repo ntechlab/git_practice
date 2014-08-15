@@ -1,0 +1,42 @@
+<script src="/js/dependencies/jquery-2.1.1.min.js"></script>
+<script>
+
+function openBoard(){
+submit("/dashboard/openBoard");
+}
+
+function editBoard(){
+submit("/dashboard/editBoard");
+}
+
+function deleteBoard(){
+submit("/dashboard/deleteBoard");
+}
+
+function createBoard(){
+submit("/dashboard/createBoard");
+}
+
+function submit(action){
+var form = document.forms.item(0);
+form.action = action;
+form.submit();
+}
+
+</script>
+<h1>ダッシュボード</h1>
+<div>
+<div>
+<form name="main" method="POST">
+<select name="selectedId">
+<% for( var i in list ) {%>
+  <option value="<%= list[i].id %>"><%= list[i].title %></option>
+<% } %>
+</select>
+	<input type="submit" onclick="openBoard()" value="開く" />
+	<input type="submit" onclick="editBoard()" value="編集" />
+	<input type="submit" onclick="deleteBoard()" value="削除" />
+<div>
+<div>
+	<input type="submit" onclick="createBoard()" value="新規作成" />
+</form>

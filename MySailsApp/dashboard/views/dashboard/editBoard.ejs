@@ -1,0 +1,18 @@
+<h1ボード情報の更新</h1>
+<form name="main" method="POST" action="/board/updateBoard">
+<input type="hidden" name="id" value="<%= id %>"/>
+	<div>
+		タイトルと説明を修正してください。
+	</div>
+	<div>
+		<div>
+			タイトル
+			<input type="text" name="title" value="<%= title %>"/>
+		</div>
+		<div>
+			説明
+			<textarea name="description"><%= description %></textarea>
+		</div>
+		<input type="submit" value="保存" />
+	</div>
+</form>

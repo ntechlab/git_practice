@@ -1,3 +1,19 @@
+<script>
+function back(){
+    submit("/dashboard/index");
+}
+
+function logout(){
+    submit("/auth/logout");
+}
+
+function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+}
+
+</script>
 <h1>チケットボード</h1>
 
 ID:<%= id %><br>
@@ -7,3 +23,10 @@ ID:<%= id %><br>
 <br>
 <br>
 ここが付箋を貼る領域
+<br>
+<br>
+
+<form method="POST">
+<input type="button" value="戻る" onclick="back()" />
+<input type="button" value="ログアウト" onclick="logout()" />
+</form>

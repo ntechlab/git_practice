@@ -1,17 +1,38 @@
+<script>
+  function create(){
+    submit("/board/createBoard");
+  }
+
+  function cancel(){
+    submit("/dashboard/index");
+  }
+
+  function logout(){
+    submit("/auth/logout");
+  }
+
+  function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+  }
+</script>
 <h1>新規作成</h1>
-<form name="main" method="POST" action="/board/createBoard">
-	<div>
-		タイトルと説明を記述してください。
-	</div>
-	<div>
-		<div>
-			タイトル
-			<input type="text" name="title" value="無題"/>
-		</div>
-		<div>
-			説明
-			<textarea name="description">説明文</textarea>
-		</div>
-		<input type="submit" value="新規作成" />
-	</div>
+<form name="main" method="POST">
+  <div>
+    タイトルと説明を記述してください。
+  </div>
+  <div>
+    <div>
+      タイトル
+      <input type="text" name="title" value="無題"/>
+    </div>
+    <div>
+      説明
+      <textarea name="description">説明文</textarea>
+    </div>
+    <input type="button" value="新規作成" onclick="create()"/>
+    <input type="button" value="キャンセル" onclick="cancel()"/>
+    <input type="button" value="ログアウト" onclick="logout()"/>
+  </div>
 </form>

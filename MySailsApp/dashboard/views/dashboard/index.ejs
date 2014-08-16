@@ -2,25 +2,32 @@
 <script>
 
 function openBoard(){
-submit("/dashboard/openBoard");
+    submit("/dashboard/openBoard");
 }
 
 function editBoard(){
-submit("/dashboard/editBoard");
+    submit("/dashboard/editBoard");
 }
 
 function deleteBoard(){
-submit("/dashboard/deleteBoard");
+    if(confirm("削除します。よろしいですか？")){
+	submit("/dashboard/deleteBoard");
+    }
+    return false; 
 }
 
 function createBoard(){
-submit("/dashboard/createBoard");
+    submit("/dashboard/createBoard");
+}
+
+function logout(){
+    submit("/auth/logout");
 }
 
 function submit(action){
-var form = document.forms.item(0);
-form.action = action;
-form.submit();
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
 }
 
 </script>
@@ -33,10 +40,11 @@ form.submit();
   <option value="<%= list[i].id %>"><%= list[i].title %></option>
 <% } %>
 </select>
-	<input type="submit" onclick="openBoard()" value="開く" />
-	<input type="submit" onclick="editBoard()" value="編集" />
-	<input type="submit" onclick="deleteBoard()" value="削除" />
+	<input type="button" onclick="openBoard()" value="開く" />
+	<input type="button" onclick="editBoard()" value="編集" />
+	<input type="button" onclick="return deleteBoard()" value="削除" />
 <div>
 <div>
-	<input type="submit" onclick="createBoard()" value="新規作成" />
+	<input type="button" onclick="createBoard()" value="新規作成" />
+	<input type="button" onclick="logout()" value="ログアウト" />
 </form>

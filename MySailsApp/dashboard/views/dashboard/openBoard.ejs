@@ -1,3 +1,6 @@
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/dependencies/jquery-2.1.1.min.js"></script>
+
 <script>
 function back(){
     submit("/dashboard/index");
@@ -13,20 +16,97 @@ function submit(action){
     form.submit();
 }
 
+  // チケット削除
+  function destroyTicket(id){
+    console.log("destroy:" + id);
+    io.socket.get('/board/process/', {actionType:"destroy", id: id});
+  };
+
+  // チケット更新
+  function updateTicket(id){
+    console.log("update:"+id);
+    var newContents = $('#ta_'+id).val();
+    io.socket.get('/board/process/', {actionType:"update", id: id, contents: newContents});
+  }
+
+  // チケット作成
+  function createTicket(){
+    console.log("create");
+    var contents = $('#contents').val();
+    $('#contents').val("");
+    io.socket.get('/board/process/', 
+      {actionType:"create", 
+       boardId : <%= boardId %>,
+       userId : <%= userId %>,
+       contents: contents});
+  }
+
+  $(function(){
+    console.log("リスナ登録");
+    io.socket.get('/board/register/');
+
+    // メッセージ受信時に呼び出される関数
+    io.socket.on('room', function(msg) {
+      console.log("メッセージ受信", msg);
+      var data = msg['data'] || {};
+      var id = data["id"];
+      console.log("verb["+msg.verb+"]");
+      if(msg.verb == "created"){
+        console.log("チケットを作成します");
+        var ms = "<tr id='"+id+"'>"
+                +"<td>"+id+"</td>"
+                +"<td><input type='button' onclick='destroyTicket("+id+")' value='削除'/></td>"
+                +"<td><input type='button' onclick='updateTicket("+id+")' value='更新'/></td>"
+                +"<td>"+data["boardId"]+"</td>"
+                +"<td>"+data["createUser"]+"</td>"
+                +"<td>"+data["nickname"]+"</td>"
+                +"<td><textarea id='ta_"+id+"'>"+data["contents"]+"</textarea></td></tr>";
+        $('#tickets').append(ms);
+      } else if(msg.verb == "updated"){
+        console.log("チケットを更新します:"+msg["id"]+","+data["contents"]);
+        $('#ta_'+msg["id"]).val(data["contents"]);
+      } else if(msg.verb == "destroyed"){
+        console.log("チケットを削除します:"+msg["id"]);
+        console.dir(msg);
+        $('tr#'+msg["id"]).remove();
+      }
+    });
+  });
 </script>
-<h1>チケットボード</h1>
 
-ID:<%= id %><br>
+<h1>チケットリスト</h1>
+
+ID:<%= boardId %><br>
+ユーザーID:<%= userId %><br>
 タイトル<%= title %><br>
-説明<%= description %>
+説明<%= description %><br>
 
+<table id="tickets" border="1">
+  <tr>
+    <th>ID</th><th>削除</th><th>更新</th><th>ボードID</th><th>ユーザーID</th><th>内容</th>
+  </tr>
+<% for( var i in list ) {%>
+  <tr id="<%= list[i].id %>">
+     <td><%= list[i].id %></td>
+     <td><input type="button" onclick="destroyTicket(<%= list[i].id %>)" value="削除"/></td>
+     <td><input type="button" onclick="updateTicket(<%= list[i].id %>)" value="更新"/></td>
+     <td><%= list[i].boardId %></td>
+     <td><%= list[i].createUser %></td>
+     <td><%= list[i].nickname %></td>
+     <td><textarea id="ta_<%= list[i].id %>"><%= list[i].contents %></textarea></td>
+  </tr>
+<% } %>
+</table>
 <br>
-<br>
-ここが付箋を貼る領域
-<br>
-<br>
-
+<div>
+  新規作成チケットの内容<br>
+  <textarea id="contents"></textarea><br>
+  <input type="button" value="新規作成" onclick="createTicket()"/>
+</div>
 <form method="POST">
+<input type="hidden" name="boardId" value="<%= boardId %>" />
+<input type="hidden" name="userId" value="<%= userId %>" />
 <input type="button" value="戻る" onclick="back()" />
 <input type="button" value="ログアウト" onclick="logout()" />
 </form>
+

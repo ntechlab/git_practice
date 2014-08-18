@@ -52,22 +52,26 @@ module.exports = {
     console.log("チケット処理：id=" + id + ",actionType=" + actionType);
     if (actionType == "create") {
       console.log("チケット作成");
-      Ticket.create({
-        boardId : req.param('boardId'),
-        createUser : req.param('userId'),
-        contents : req.param('contents')
-      }).exec(function(err, ticket) {
-        if (err) {
-          return console.log(err);
-        } else {
-          console.log("チケットを作成しました：", ticket);
-          Room.publishCreate({
-	      id: ticket.id, 
-	      contents: ticket.contents,
-	      boardId: ticket.boardId,
-	      createUser : ticket.createUser});
-        }
-      });
+	var userId = req.param('userId');
+	User.findOne(userId).exec(function(err, foundUser) {
+	    Ticket.create({
+		boardId : req.param('boardId'),
+		createUser : userId,
+		contents : req.param('contents')
+	    }).exec(function(err, ticket) {
+		if (err) {
+		    return console.log(err);
+		} else {
+		    console.log("チケットを作成しました：", ticket);
+		    Room.publishCreate({
+			id: ticket.id, 
+			contents: ticket.contents,
+			boardId: ticket.boardId,
+			createUser : ticket.createUser,
+			nickname : foundUser["nickname"]});
+		}
+	    });
+	});
     } else if (actionType == "destroy") {
       console.log("チケット削除:" + id);
       Ticket.findOne({

@@ -17,32 +17,65 @@ module.exports = {
 	var boardId = req.param("selectedId");
 	var userId = req.session.passport.user;
 	console.log("selected boardId:"+boardId);
+
+	var wait = function (callbacks, done) {
+	    var counter = callbacks.length;
+	    var next = function() {
+		if (--counter == 0) {
+		    done();
+		}
+	    };
+	    
+	    for (var i=0; i < callbacks.length; i++) {
+		callbacks[i](next);
+	    };
+	}
+
 	Board.findOne(boardId).exec(function(err,found){
 	    console.log("edit board:found["+found+"]");
 	    Ticket.find({boardId : boardId}).exec(function(err, tickets) {
+
+		// 第1段階で終了すべき関数
+		var prerequisite = [];
+
+		// 対象ボード上のチケットにニックネームを追加する。
 		for(var i = 0; i < tickets.length; i++) {
-		    tickets[i]["nickname"] = "NICKNAME";
-		}
-		// var tickets3 = JSON.parse(JSON.stringify(tickets));
-		// for(var i = 0; i < tickets3.length; i++) {
-		//     var ti = tickets3[i];
-		//     (function(num){
-		// 	User.findOne(ti["createUser"]).exec(function(err, userFound) {
-		// 	    if(userFound){
-		// 		console.log("add to map:"+userFound["id"]+","+ userFound["nickname"]);
-		// 		tickets3[num]["nickname"] = userFound["nickname"];
-		// 		console.log("num="+num);
-		// 	    }
-		// 	});
-		//     })(i);
-		//     console.log("for end:"+i);
-		// }
-		// console.log("res.view");
-    		res.view({boardId: boardId, 
-		 	  userId: userId,
-		 	  title : found["title"], 
-		 	  description: found["description"],
-		 	  list : tickets});
+
+		    // インデックス番号を保持するためのクロージャー
+		    new function(num){
+			var ti = tickets[num];
+
+			// 各チケットに対するニックネーム取得処理のラッパ関数をprerequisiteに格納
+			prerequisite.push(function(next) {
+			    User.findOne(ti["createUser"]).exec(function(err, userFound) {
+				console.log("prerequisite function No."+num+" called.");
+				if(userFound){
+				    // ニックネームをチケットに追加。
+				    ti["nickname"] = userFound["nickname"];
+				}
+
+				// コールバック関数終了時にnext()を呼び出す。
+				next();
+			    });
+			})
+		    }(i);
+		    console.log("ループ[" + i + "] 終了");
+		};
+
+		// ビュー生成関数のラッパー生成
+		var createViewWrapper = function (){
+		    console.log("createViewWrapper called");
+		    var obj = {boardId: boardId, 
+		 	      userId: userId,
+		 	      title : found["title"], 
+		 	      description: found["description"],
+		 	      list : tickets}; 
+		    console.dir(obj);
+    		    res.view(obj);
+		};
+
+		// 同期処理実行
+		wait(prerequisite, createViewWrapper);
 	    });
     	});
     },

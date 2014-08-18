@@ -73,17 +73,34 @@ function submit(action){
     });
   });
 </script>
+<style>
+table th {
+  background-color:#dfd;
+}
 
+#info th {
+  width:150px;
+  text-align:left;
+}
+</style>
 <h1>チケットリスト</h1>
 
-ID:<%= boardId %><br>
-ユーザーID:<%= userId %><br>
-タイトル<%= title %><br>
-説明<%= description %><br>
-
+<table id="info" border="1">
+  <tr><th>ID</th><td><%= boardId %></td></tr>
+  <tr><th>ユーザーID</th><td><%= userId %></td></tr>
+  <tr><th>タイトル</th><td><%= title %></td></tr>
+  <tr><th>説明</th><td><%= description %></td></tr>
+</table>
+<br>
 <table id="tickets" border="1">
   <tr>
-    <th>ID</th><th>削除</th><th>更新</th><th>ボードID</th><th>ユーザーID</th><th>内容</th>
+    <th>ID</th>
+    <th>削除</th>
+    <th>更新</th>
+    <th>ボードID</th>
+    <th>ユーザーID</th>
+    <th>ニックネーム</th>
+    <th>内容</th>
   </tr>
 <% for( var i in list ) {%>
   <tr id="<%= list[i].id %>">

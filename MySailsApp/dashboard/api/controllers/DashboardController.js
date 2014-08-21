@@ -86,6 +86,12 @@ module.exports = {
 
     openBoard2 : function(req, res) {
 	var boardId = req.param("selectedId");
+	console.log("openBoard2 called: boardId[" + boardId + "]");
+	if(!boardId){
+	    console.log("ボードIDが存在しないためボード選択画面に遷移。");
+	    res.redirect("/dashboard/index");
+	    return;
+	}
 	var loginUserId = Utility.getLoginUserId(req, res);
 	console.log("selected boardId:"+boardId);
 

@@ -49,7 +49,9 @@ module.exports = {
   process : function(req, res) {
     var actionType = req.param('actionType');
     var id = req.param('id');
-    console.log("チケット処理：id=" + id + ",actionType=" + actionType);
+    var data = req.param('data');
+
+    console.log("チケット処理：id=" + id + ",actionType=" + actionType+", data="+data);
     if (actionType == "create") {
       console.log("チケット作成");
 	var userId = req.param('userId');
@@ -90,14 +92,21 @@ module.exports = {
         });
       });
     } else if (actionType == "update") {
-      console.log("チケット更新:" + id + ", " + req.param('contents'));
-      Ticket.update({
-        id : id
-      }, {
-        id : id,
-        contents : req.param('contents')
+        var x = req.param('positionX');
+        var y = req.param('positionY');
+        var contents = req.param('contents');
+        console.log("チケット更新:" + id + ", " + x+","+y+","+contents);
+        Ticket.update({
+          id : id
+        }, {
+          positionX : x,
+          positionY : y,
+          contents : contents
       }).exec(function update(err, updated) {
-        Room.publishUpdate(updated[0].id,{ contents:updated[0].contents });
+        Room.publishUpdate(updated[0].id, 
+			   { positionX: updated[0].positionX,
+			     positionY: updated[0].positionY,
+			     contents: updated[0].contents });
       });
     }
   }

@@ -4,46 +4,30 @@
 <script src="/js/dependencies/jquery-ui.min.js"></script>
 <script>
 
-function back(){
-    submit("/dashboard/index");
-}
-
-function logout(){
-    submit("/auth/logout");
-}
-
-function submit(action){
-    var form = document.forms.item(0);
-    form.action = action;
-    form.submit();
-}
-
-
   // チケット削除
   function destroyTicket(id){
-    console.log("destroy:" + id);
+    console.log("destroyTicket:" + id);
     io.socket.get('/board/process/', {actionType:"destroy", id: id});
   }
 
   // チケット更新
   function updateTicket(id){
-    console.log("update:"+id);
+    console.log("updateTicket:"+id);
     var newContents = $('#ta_'+id).val();
     io.socket.get('/board/process/', {actionType:"update", id: id, contents: newContents});
   }
 
   // チケット作成
   function createTicket(){
-    console.log("create");
+    console.log("createTicket");
     io.socket.get('/board/process/', 
     {actionType:"create", 
-    contents: $('#contents').val(), 
-    positionX: $('#contents').css('left'), 
-    positionY: $('#contents').css('top'), 
-    color: $('#color').val(),
-    boardId : <%= boardId %>,
-    userId : <%= loginUserId %>}
-  );
+     contents: $('#contents').val(), 
+     positionX: 0,//$('#contents').css('left'), 
+     positionY: 0,//$('#contents').css('top'), 
+     color: $('#color').val(),
+     boardId : <%= boardId %>,
+     userId : <%= loginUserId %>});
   }
 
   function make(data) {
@@ -51,17 +35,21 @@ function submit(action){
    var sticky = $('<div class="sticky"></div>');
    sticky.text(val);
    sticky.appendTo('#board')
+      .attr('data-id', data["id"])
       .css('background-color', data["color"])
       .css('left', data["positionX"])
       .css('top', data["positionY"])
-      .draggable({stop: save})
+      .draggable({stop: updateFusenListener})
       .dblclick(function() {
-        $(this).html('<textarea>' + $(this).html() + '</textarea>')
+        var $self = $(this);
+        var id0 = data["id"];
+        $self.html('<textarea>' + $self.html() + '</textarea>')
           .children()
           .focus()
           .blur(function() {
             $(this).parent().html($(this).val());
-            save();
+            var $sticky = $self.closest('.sticky');
+            updateFusen($sticky);
           });
       }).mousedown(function() {
         $('.sticky').removeClass('selected');
@@ -70,24 +58,61 @@ function submit(action){
     return sticky;
   }
   
-  function save() {
-    var items = [];
-    $('.sticky').each(function() {
-      items.push({
-        css: {
-          left: $(this).css('left'),
-          top: $(this).css('top'),
-          backgroundColor: $(this).css('background-color')
-        },
-        html: $(this).html()
-      });
-    });
+  // 付箋更新処理を呼び出すリスナ
+  function updateFusenListener() {
+    updateFusen($(this));
   }
 
+  // 付箋更新処理
+  function updateFusen($target) {
+    var newData = {};
+    newData["actionType"] = "update";
+    newData["id"] = $target.data('id');
+    newData["positionX"] = $target.css('left');
+    newData["positionY"] = $target.css('top');
+    newData["contents"] = $target.text();
+    console.dir(newData);
+    io.socket.get('/board/process/', newData);
+  }
 
+  // 戻るアクション
+  function back(){
+    submit("/dashboard/index");
+  }
+
+  // ログアウトアクション
+  function logout(){
+    submit("/auth/logout");
+  }
+
+  // 送信処理
+  function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+  }
+
+  // jQueryオンロード処理
   $(function(){
-    console.log("リスナ登録");
 
+　　// 付箋データをhtml上に展開。
+    var ticketData = [<% for( var k in list ) {%>
+      {id: <%= list[k].id %>, 
+       positionX : '<%= list[k].positionX %>',
+       positionY : '<%= list[k].positionY %>', 
+       color : '<%= list[k].color %>',
+       contents : '<%= list[k].contents %>'},
+    <%}%>
+    ];
+
+    // 付箋データから付箋を作成し、ボードに追加。
+    for(var i = 0; i < ticketData.length; i++){
+      var data = ticketData[i];
+      var sticky = make(data);
+      $('#board').append(sticky);
+    }
+
+    console.log("リスナ登録");
     io.socket.get('/board/register/');
 
     // メッセージ受信時に呼び出される関数
@@ -113,8 +138,14 @@ function submit(action){
         $('#board').append(sticky);
 
       } else if(msg.verb == "updated"){
+
         console.log("チケットを更新します:"+msg["id"]+","+data["contents"]);
         $('#ta_'+msg["id"]).val(data["contents"]);
+
+	var $sticky = $(".sticky[data-id='"+msg['id']+"']");
+	$sticky.css('left', data["positionX"]);
+	$sticky.css('top', data["positionY"]);
+	$sticky.text(data["contents"]);
       } else if(msg.verb == "destroyed"){
         console.log("チケットを削除します:"+msg["id"]);
         console.dir(msg);
@@ -187,14 +218,14 @@ textarea {
     <option value="#fcc">赤色</option>
     <option value="#cfc">緑色</option>
   </select>
-  <div id="board" style="background-color: #F7BE81; width: 500px; height: 300px;">
+  <div id="board" style="position:relative; background-color: #F7BE81; width: 500px; height: 300px;">
 
 </div>
 </div>
 
 <form method="POST">
-<input type="hidden" name="boardId" value="<%= boardId %>" />
-<input type="hidden" name="userId" value="<%= loginUserId %>" />
-<input type="button" value="戻る" onclick="back()" />
-<input type="button" value="ログアウト" onclick="logout()" />
+  <input type="hidden" name="boardId" value="<%= boardId %>" />
+  <input type="hidden" name="userId" value="<%= loginUserId %>" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
 </form>

@@ -8,27 +8,33 @@
 module.exports = {
 
     index : function(req, res) {
+	var loginUserId = Utility.getLoginUserId(req, res);
 	Board.find({}).exec(function(err,found){
-            res.view({list: found});
+            res.view({list: found, loginUserId: loginUserId});
 	});
     },
 
     openBoard : function(req, res) {
 	var boardId = req.param("selectedId");
-	var userId = req.session.passport.user;
+	var loginUserId = Utility.getLoginUserId(req, res);
 	console.log("selected boardId:"+boardId);
 
 	var wait = function (callbacks, done) {
+	    console.log("wait called:"+callbacks.length);
 	    var counter = callbacks.length;
-	    var next = function() {
-		if (--counter == 0) {
-		    done();
-		}
-	    };
-	    
-	    for (var i=0; i < callbacks.length; i++) {
-		callbacks[i](next);
-	    };
+	    if (counter > 0) {
+		var next = function() {
+		    if (--counter == 0) {
+			done();
+		    }
+		};
+		
+		for (var i=0; i < callbacks.length; i++) {
+		    callbacks[i](next);
+		};
+	    } else {
+		done();
+	    }
 	}
 
 	Board.findOne(boardId).exec(function(err,found){
@@ -66,7 +72,7 @@ module.exports = {
 		var createViewWrapper = function (){
 		    console.log("createViewWrapper called");
 		    var obj = {boardId: boardId, 
-		 	      userId: userId,
+		 	      loginUserId: loginUserId,
 		 	      title : found["title"], 
 		 	      description: found["description"],
 		 	      list : tickets}; 

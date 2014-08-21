@@ -44,6 +44,7 @@ function submit(action){
 
 </script>
 <h1>ユーザー管理</h1>
+ログインユーザー:<%= loginUserId %><br>
 <form method="POST">
   <table border="1">
   <% for( var i in users ) {%>
@@ -57,7 +58,6 @@ function submit(action){
   <% } %>
   </table>
   <input type="hidden" id="target" name="target" value="" />
-  <input type="hidden" id="userId" name="userId" value="<%= userId %>" />
   <input type="button" value="新規作成" onclick="openCreateUser()" />
   <input type="button" value="戻る" onclick="back()" />
   <input type="button" value="ログアウト" onclick="logout()" />

@@ -37,11 +37,11 @@
 
 </script>
 <h1>ユーザー作成</h1>
+ログインユーザー:<%= loginUserId %><br>
 <form method="POST">
 ユーザーＩＤ：<input id="username" name="username" /><br>
 パスワード：<input id="password" name="password" /><br>
 ニックネーム：<input id="nickname" name="nickname" /><br>
-  <input type="hidden" name="userId" value="<%= userId %>" />
   <input type="button" value="新規作成" onclick="createUser()" />
   <input type="button" value="戻る" onclick="back()" />
   <input type="button" value="ログアウト" onclick="logout()" />

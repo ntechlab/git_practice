@@ -37,8 +37,10 @@ function submit(action){
 </script>
 <h1>ダッシュボード</h1>
 <div>
+ログインユーザー:<%= loginUserId %><br>
 <div>
 <form name="main" method="POST">
+<input type="hidden" name="loginUserId" value="<%= loginUserId %>"/>
 <select name="selectedId">
 <% for( var i in list ) {%>
   <option value="<%= list[i].id %>"><%= list[i].title %></option>

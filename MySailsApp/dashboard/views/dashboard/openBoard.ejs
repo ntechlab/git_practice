@@ -37,7 +37,7 @@ function submit(action){
     io.socket.get('/board/process/', 
       {actionType:"create", 
        boardId : <%= boardId %>,
-       userId : <%= userId %>,
+       userId : <%= loginUserId %>,
        contents: contents});
   }
 
@@ -84,10 +84,9 @@ table th {
 }
 </style>
 <h1>チケットリスト</h1>
-
+ログインユーザー:<%= loginUserId %><br>
 <table id="info" border="1">
   <tr><th>ID</th><td><%= boardId %></td></tr>
-  <tr><th>ユーザーID</th><td><%= userId %></td></tr>
   <tr><th>タイトル</th><td><%= title %></td></tr>
   <tr><th>説明</th><td><%= description %></td></tr>
 </table>
@@ -122,7 +121,7 @@ table th {
 </div>
 <form method="POST">
 <input type="hidden" name="boardId" value="<%= boardId %>" />
-<input type="hidden" name="userId" value="<%= userId %>" />
+<input type="hidden" name="userId" value="<%= loginUserId %>" />
 <input type="button" value="戻る" onclick="back()" />
 <input type="button" value="ログアウト" onclick="logout()" />
 </form>

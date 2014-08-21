@@ -5,6 +5,10 @@ function openBoard(){
     submit("/dashboard/openBoard");
 }
 
+function openBoard2(){
+    submit("/dashboard/openBoard2");
+}
+
 function editBoard(){
     submit("/dashboard/editBoard");
 }
@@ -47,6 +51,7 @@ function submit(action){
 <% } %>
 </select>
 	<input type="button" onclick="openBoard()" value="開く" />
+	<input type="button" onclick="openBoard2()" value="開く2" />
 	<input type="button" onclick="editBoard()" value="編集" />
 	<input type="button" onclick="return deleteBoard()" value="削除" />
 <div>

@@ -1,0 +1,141 @@
+<link type="text/css" rel="stylesheet" href="/css/smoothness/jquery-ui.min.css" />
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/dependencies/jquery-2.1.1.min.js"></script>
+<script src="/js/dependencies/jquery-ui.min.js"></script>
+<script>
+  // チケット削除
+  function destroyTicket(id){
+    console.log("destroy:" + id);
+    io.socket.get('/board/process/', {actionType:"destroy", id: id});
+  };
+
+  // チケット更新
+  function updateTicket(id){
+    console.log("update:"+id);
+    var newContents = $('#ta_'+id).val();
+    io.socket.get('/board/process/', {actionType:"update", id: id, contents: newContents});
+  }
+
+  // チケット作成
+  function createTicket(){
+    console.log("create");
+    io.socket.get('/board/process/', {actionType:"create", contents: $('#contents').val(), positionX: $('#contents').css('left'), positionY: $('#contents').css('top'), color: $('#color').val(),boardId : <%= boardId %>,
+       userId : <%= loginUserId %>});
+  }
+
+  function make(data) {
+   var val = data["contents"];
+   var sticky = $('<div class="sticky"></div>');
+   sticky.text(val);
+   sticky.appendTo('#board')
+      .css('background-color', data["color"])
+      .css('left', data["positionX"])
+      .css('top', data["positionY"])
+      .draggable({stop: save})
+      .dblclick(function() {
+        $(this).html('<textarea>' + $(this).html() + '</textarea>')
+          .children()
+          .focus()
+          .blur(function() {
+            $(this).parent().html($(this).val());
+            save();
+          });
+      }).mousedown(function() {
+        $('.sticky').removeClass('selected');
+        $(this).addClass('selected');
+      });
+    return sticky;
+  }
+  function save() {
+    var items = [];
+    $('.sticky').each(function() {
+      items.push({
+        css: {
+          left: $(this).css('left'),
+          top: $(this).css('top'),
+          backgroundColor: $(this).css('background-color')
+        },
+        html: $(this).html()
+      });
+    });
+  }
+
+
+  $(function(){
+    console.log("リスナ登録");
+
+    io.socket.get('/board/register/');
+
+    // メッセージ受信時に呼び出される関数
+    io.socket.on('room', function(msg) {
+      console.log("メッセージ受信", msg);
+      var data = msg['data'] || {};
+      var id = data["id"];
+      console.log("verb["+msg.verb+"]");
+      if(msg.verb == "created"){
+        console.log("チケットを作成します");
+        var ms = "<tr id='"+id+"'>"
+                +"<td>"+id+"</td>"
+                +"<td><input type='button' onclick='destroyTicket("+id+")' value='削除'/></td>"
+                +"<td><input type='button' onclick='updateTicket("+id+")' value='更新'/></td>"
+                +"<td><textarea id='ta_"+id+"'>"+data["contents"]+"</textarea></td></tr>";
+        $('#tickets').append(ms);
+
+        var sticky = make(data);
+        $('#board').append(sticky);
+
+      } else if(msg.verb == "updated"){
+        console.log("チケットを更新します:"+msg["id"]+","+data["contents"]);
+        $('#ta_'+msg["id"]).val(data["contents"]);
+      } else if(msg.verb == "destroyed"){
+        console.log("チケットを削除します:"+msg["id"]);
+        console.dir(msg);
+        $('tr#'+msg["id"]).remove();
+      }
+    });
+});
+</script>
+<style>
+.sticky {
+  width: 250px;
+  height: 50px;
+  position: absolute;
+  cursor: pointer;
+  border: 1px solid #aaa;
+}
+textarea {
+  width: 100%;
+  height: 100%;
+}
+.selected {border-color: #f44;}
+
+</style>
+<h1>チケットリスト</h1>
+<table id="tickets" border="1">
+  <tr>
+    <th>ID</th><th>削除</th><th>更新</th><th>内容</th>
+  </tr>
+<% for( var i in list ) {%>
+  <tr id="<%= list[i].id %>">
+     <td><%= list[i].id %></td>
+     <td><input type="button" onclick="destroyTicket(<%= list[i].id %>)" value="削除"/></td>
+     <td><input type="button" onclick="updateTicket(<%= list[i].id %>)" value="更新"/></td>
+     <td><textarea id="ta_<%= list[i].id %>"><%= list[i].contents %></textarea></td>
+  </tr>
+<% } %>
+</table>
+<br>
+<div>
+  新規作成チケットの内容<br>
+  <textarea id="contents" style="width: 300px;"></textarea><br>
+  <input type="button" value="新規作成" onclick="createTicket()"/>
+  <select id="color">
+    <option value="#ffc">黄色</option>
+    <option value="#fcc">赤色</option>
+    <option value="#cfc">緑色</option>
+  </select>
+  <div id="board" style="background-color: #F7BE81; width: 500px; height: 300px;">
+
+</div>
+</div>
+

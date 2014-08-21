@@ -1,5 +1,4 @@
-<link type="text/css" rel="stylesheet"
-  href="/css/smoothness/jquery-ui.min.css" />
+<link type="text/css" rel="stylesheet" href="/css/smoothness/jquery-ui.min.css" />
 <script src="/js/dependencies/sails.io.js"></script>
 <script src="/js/dependencies/jquery-2.1.1.min.js"></script>
 <script src="/js/dependencies/jquery-ui.min.js"></script>
@@ -20,7 +19,8 @@
   // チケット作成
   function createTicket(){
     console.log("create");
-    io.socket.get('/board/process/', {actionType:"create", contents: $('#contents').val(), positionX: $('#contents').css('left'), positionY: $('#contents').css('top'), color: $('#color').val()});
+    io.socket.get('/board/process/', {actionType:"create", contents: $('#contents').val(), positionX: $('#contents').css('left'), positionY: $('#contents').css('top'), color: $('#color').val(),boardId : <%= boardId %>,
+       userId : <%= userId %>});
   }
 
   function make(data) {
@@ -38,30 +38,7 @@
           .focus()
           .blur(function() {
             $(this).parent().html($(this).val());
-//            save();
-          });
-      }).mousedown(function() {
-        $('.sticky').removeClass('selected');
-        $(this).addClass('selected');
-      });
-    return sticky;
-  }
-  function make2(contsnts, x, y, color) {
-   var val = contents;
-   var sticky = $('<div class="sticky"></div>');
-   sticky.text(val);
-   sticky.appendTo('#board')
-      .css('background-color', color)
-      .css('left', x)
-      .css('top', y)
-      .draggable({stop: save})
-      .dblclick(function() {
-        $(this).html('<textarea>' + $(this).html() + '</textarea>')
-          .children()
-          .focus()
-          .blur(function() {
-            $(this).parent().html($(this).val());
-//            save();
+            save();
           });
       }).mousedown(function() {
         $('.sticky').removeClass('selected');
@@ -116,6 +93,7 @@
         $('tr#'+msg["id"]).remove();
       }
     });
+});
 </script>
 <style>
 .sticky {

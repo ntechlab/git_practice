@@ -1,0 +1,48 @@
+<script>
+  // ユーザー作成
+  function createUser(){
+    console.log("createUser");
+    if($('#username').val() == ''){
+      alert('ユーザ名を入力してください。');
+      return false;
+    }
+    if($('#password').val() == ''){
+      alert('パスワードを入力してください。');
+      return false;
+    }
+    if($('#nickname').val() == ''){
+      alert('ニックネームを入力してください。');
+      return false;
+    }
+
+    submit("/usermanage/createUser");
+  };
+  // 戻る
+  function back(){
+    console.log("back");
+    submit("/dashboard/index");
+  }
+
+  // ログアウト
+  function logout(){
+    console.log("logout");
+    submit("/auth/logout");
+  }
+
+  function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+  }
+
+</script>
+<h1>ユーザー作成</h1>
+<form method="POST">
+ユーザーＩＤ：<input id="username" name="username" /><br>
+パスワード：<input id="password" name="password" /><br>
+ニックネーム：<input id="nickname" name="nickname" /><br>
+  <input type="hidden" name="userId" value="<%= userId %>" />
+  <input type="button" value="新規作成" onclick="createUser()" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
+</form>

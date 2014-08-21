@@ -1,0 +1,64 @@
+<script>
+  // ユーザー作成
+  function openCreateUser(){
+    console.log("openCreate");
+    submit("/usermanage/openCreate");
+  };
+
+  // ユーザー作成
+  function createUser(){
+    console.log("createUser");
+    submit("/usermanage/index");
+  };
+
+  // ユーザー削除
+  function destroyUser(id){
+    console.log("destroy:" + id);
+    $('#target').val(id);
+    submit("/usermanage/destroyUser");
+  };
+
+  // ユーザー更新
+  function openUpdateUser(id){
+    console.log("openUpdateUser:"+id);
+    $('#target').val(id);
+    submit("/usermanage/openUpdateUser");
+  }
+
+  // 戻る
+  function back(){
+    console.log("back");
+    submit("/dashboard/index");
+  }
+  // ログアウト
+  function logout(){
+    console.log("logout");
+    submit("/auth/logout");
+  }
+
+function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+}
+
+</script>
+<h1>ユーザー管理</h1>
+<form method="POST">
+  <table border="1">
+  <% for( var i in users ) {%>
+    <tr id="<%= users[i].id %>">
+       <td><%= users[i].id %></td>
+       <td><input type="button" onclick="destroyUser(<%= users[i].id %>)" value="削除"/></td>
+       <td><input type="button" onclick="openUpdateUser(<%= users[i].id %>)" value="更新"/></td>
+       <td><%= users[i].username %></td>
+       <td><%= users[i].nickname %></td>
+    </tr>
+  <% } %>
+  </table>
+  <input type="hidden" id="target" name="target" value="" />
+  <input type="hidden" id="userId" name="userId" value="<%= userId %>" />
+  <input type="button" value="新規作成" onclick="openCreateUser()" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
+</form>

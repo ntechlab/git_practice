@@ -1,0 +1,45 @@
+<script>
+
+  // ユーザー更新
+  function updateUser(){
+    if($('#username').val() == ''){
+      alert('ユーザ名を入力してください。');
+      return false;
+    }
+    if($('#nickname').val() == ''){
+      alert('ニックネームを入力してください。');
+      return false;
+    }
+    submit("/usermanage/updateUser");
+  }
+
+  // 戻る
+  function back(){
+    console.log("back");
+    submit("/dashboard/index");
+  }
+
+  // ログアウト
+  function logout(){
+    console.log("logout");
+    submit("/auth/logout");
+  }
+
+  function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+  }
+</script>
+
+<h1>ユーザー更新</h1>
+<form method="POST">
+ユーザーＩＤ：<input id="username" name="username" value="<%= username %>"/><br>
+パスワード：<input id="password" name="password" value=""/><br>
+ニックネーム：<input id="nickname" name="nickname" value="<%= nickname %>"/><br>
+  <input type="hidden" name="target" value="<%= target %>" />
+  <input type="hidden" name="userId" value="<%= userId %>" />
+  <input type="button" value="更新" onclick="updateUser()" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
+</form>

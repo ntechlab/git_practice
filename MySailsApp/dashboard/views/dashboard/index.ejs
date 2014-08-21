@@ -24,6 +24,10 @@ function logout(){
     submit("/auth/logout");
 }
 
+function userManage(){
+    submit("/usermanage/index");
+}
+
 function submit(action){
     var form = document.forms.item(0);
     form.action = action;
@@ -47,4 +51,5 @@ function submit(action){
 <div>
 	<input type="button" onclick="createBoard()" value="新規作成" />
 	<input type="button" onclick="logout()" value="ログアウト" />
+	<input type="button" onclick="userManage()" value="ユーザー管理画面" />
 </form>

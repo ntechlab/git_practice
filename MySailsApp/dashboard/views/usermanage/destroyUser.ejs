@@ -1,0 +1,45 @@
+<script>
+  // ユーザー作成
+  function createUser(){
+    console.log("create");
+    submit("/usermanage/create");
+  };
+
+  // ユーザー削除
+  function destroyUser(id){
+    console.log("destroy:" + id);
+    submit("/usermanage/delete");
+  };
+
+  // ユーザー更新
+  function updateUser(id){
+    console.log("update:"+id);
+    submit("/usermanage/update");
+  }
+
+function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+}
+
+</script>
+<h1>ユーザー更新</h1>
+<form method="POST">
+  <table border="1">
+  <% for( var i in users ) {%>
+    <tr id="<%= users[i].id %>">
+       <td><%= users[i].id %></td>
+       <td><input type="button" onclick="destroyUser(<%= users[i].id %>)" value="削除"/></td>
+       <td><input type="button" onclick="updateUser(<%= users[i].id %>)" value="更新"/></td>
+       <td><%= users[i].username %></td>
+       <td><%= users[i].nickname %></td>
+    </tr>
+  <% } %>
+  </table>
+  <input type="hidden" name="target" value="" />
+  <input type="hidden" name="userId" value="<%= userId %>" />
+  <input type="button" value="新規作成" onclick="createUser()" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
+</form>

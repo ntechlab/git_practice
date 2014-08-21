@@ -8,17 +8,24 @@
 module.exports = {
 
     attributes: {
-	boardId : {
-	    type : 'integer'
-	},
-	createUser : {
-	    type: 'string',
-	},
-	contents : {
-	    type: 'string',
-	    defaultsTo : 'not written'
-	}
-	
+		boardId : {
+		    type : 'integer'
+		},
+		createUser : {
+		    type: 'string'
+		},
+		contents : {
+		    type: 'string'
+		},
+		positionX : {
+			type: 'string'
+		},
+		positionY : {
+			type: 'string'
+		},
+		color : {
+			type: 'string'
+		}
     }
 };
 

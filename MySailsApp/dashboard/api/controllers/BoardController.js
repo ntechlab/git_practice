@@ -57,7 +57,10 @@ module.exports = {
 	    Ticket.create({
 		boardId : req.param('boardId'),
 		createUser : userId,
-		contents : req.param('contents')
+		contents : req.param('contents'),
+		positionX : req.param('positionX'),
+		positionY : req.param('positionY'),
+		color : req.param('color')
 	    }).exec(function(err, ticket) {
 		if (err) {
 		    return console.log(err);
@@ -68,6 +71,9 @@ module.exports = {
 			contents: ticket.contents,
 			boardId: ticket.boardId,
 			createUser : ticket.createUser,
+			positionX: ticket.positionX,
+			positionY: ticket.positionY,
+			color: ticket.color
 			nickname : foundUser["nickname"]});
 		}
 	    });

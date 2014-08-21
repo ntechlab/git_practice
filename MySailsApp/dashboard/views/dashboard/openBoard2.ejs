@@ -3,11 +3,27 @@
 <script src="/js/dependencies/jquery-2.1.1.min.js"></script>
 <script src="/js/dependencies/jquery-ui.min.js"></script>
 <script>
+
+function back(){
+    submit("/dashboard/index");
+}
+
+function logout(){
+    submit("/auth/logout");
+}
+
+function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+}
+
+
   // チケット削除
   function destroyTicket(id){
     console.log("destroy:" + id);
     io.socket.get('/board/process/', {actionType:"destroy", id: id});
-  };
+  }
 
   // チケット更新
   function updateTicket(id){
@@ -19,8 +35,15 @@
   // チケット作成
   function createTicket(){
     console.log("create");
-    io.socket.get('/board/process/', {actionType:"create", contents: $('#contents').val(), positionX: $('#contents').css('left'), positionY: $('#contents').css('top'), color: $('#color').val(),boardId : <%= boardId %>,
-       userId : <%= loginUserId %>});
+    io.socket.get('/board/process/', 
+    {actionType:"create", 
+    contents: $('#contents').val(), 
+    positionX: $('#contents').css('left'), 
+    positionY: $('#contents').css('top'), 
+    color: $('#color').val(),
+    boardId : <%= boardId %>,
+    userId : <%= loginUserId %>}
+  );
   }
 
   function make(data) {
@@ -46,6 +69,7 @@
       });
     return sticky;
   }
+  
   function save() {
     var items = [];
     $('.sticky').each(function() {
@@ -78,7 +102,11 @@
                 +"<td>"+id+"</td>"
                 +"<td><input type='button' onclick='destroyTicket("+id+")' value='削除'/></td>"
                 +"<td><input type='button' onclick='updateTicket("+id+")' value='更新'/></td>"
+                +"<td>"+data["boardId"]+"</td>"
+                +"<td>"+data["createUser"]+"</td>"
+                +"<td>"+data["nickname"]+"</td>"
                 +"<td><textarea id='ta_"+id+"'>"+data["contents"]+"</textarea></td></tr>";
+
         $('#tickets').append(ms);
 
         var sticky = make(data);
@@ -96,6 +124,15 @@
 });
 </script>
 <style>
+table th {
+  background-color:#dfd;
+}
+
+#info th {
+  width:150px;
+  text-align:left;
+}
+
 .sticky {
   width: 250px;
   height: 50px;
@@ -111,15 +148,31 @@ textarea {
 
 </style>
 <h1>チケットリスト</h1>
+ログインユーザー:<%= loginUserId %><br>
+<table id="info" border="1">
+  <tr><th>ID</th><td><%= boardId %></td></tr>
+  <tr><th>タイトル</th><td><%= title %></td></tr>
+  <tr><th>説明</th><td><%= description %></td></tr>
+</table>
+<br>
 <table id="tickets" border="1">
   <tr>
-    <th>ID</th><th>削除</th><th>更新</th><th>内容</th>
+    <th>ID</th>
+    <th>削除</th>
+    <th>更新</th>
+    <th>ボードID</th>
+    <th>ユーザーID</th>
+    <th>ニックネーム</th>
+    <th>内容</th>
   </tr>
 <% for( var i in list ) {%>
   <tr id="<%= list[i].id %>">
      <td><%= list[i].id %></td>
      <td><input type="button" onclick="destroyTicket(<%= list[i].id %>)" value="削除"/></td>
      <td><input type="button" onclick="updateTicket(<%= list[i].id %>)" value="更新"/></td>
+     <td><%= list[i].boardId %></td>
+     <td><%= list[i].createUser %></td>
+     <td><%= list[i].nickname %></td>
      <td><textarea id="ta_<%= list[i].id %>"><%= list[i].contents %></textarea></td>
   </tr>
 <% } %>
@@ -139,3 +192,9 @@ textarea {
 </div>
 </div>
 
+<form method="POST">
+<input type="hidden" name="boardId" value="<%= boardId %>" />
+<input type="hidden" name="userId" value="<%= loginUserId %>" />
+<input type="button" value="戻る" onclick="back()" />
+<input type="button" value="ログアウト" onclick="logout()" />
+</form>

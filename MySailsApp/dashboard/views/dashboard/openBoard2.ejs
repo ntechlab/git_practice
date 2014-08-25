@@ -40,6 +40,22 @@
       .css('left', data["positionX"])
       .css('top', data["positionY"])
       .draggable({stop: updateFusenListener})
+      .click(function(e) {
+        console.log("付箋クリックイベント発生");
+        var $self = $(this);
+	var strWidth = $self.css("width");
+	strWidth = strWidth.replace("px","");
+        var width = parseInt(strWidth);
+        var x = e.offsetX;
+        var y = e.offsetY;
+        // 付箋の右上がクリックされた場合には削除するか否かを尋ねる。
+        if(width - x < 20 && y < 20){
+          if(confirm("付箋を削除しますか？")){
+            var id = data["id"];
+            destroyTicket(id);
+          }
+        }
+      })
       .dblclick(function() {
         var $self = $(this);
         var id0 = data["id"];
@@ -98,9 +114,9 @@
   $('#board').contextMenu('myMenu1', {
       bindings: {
         'create': function(t) {
-	 createTicket(posX, posY);
-	 posX = 0;
-	 posY = 0;
+         createTicket(posX, posY);
+         posX = 0;
+         posY = 0;
         }
       },
       onContextMenu: function(event){
@@ -155,18 +171,17 @@
         $('#board').append(sticky);
 
       } else if(msg.verb == "updated"){
-
         console.log("チケットを更新します:"+msg["id"]+","+data["contents"]);
         $('#ta_'+msg["id"]).val(data["contents"]);
-
-	var $sticky = $(".sticky[data-id='"+msg['id']+"']");
-	$sticky.css('left', data["positionX"]);
-	$sticky.css('top', data["positionY"]);
-	$sticky.text(data["contents"]);
+        var $sticky = $(".sticky[data-id='"+msg['id']+"']");
+        $sticky.css('left', data["positionX"]);
+        $sticky.css('top', data["positionY"]);
+        $sticky.text(data["contents"]);
       } else if(msg.verb == "destroyed"){
         console.log("チケットを削除します:"+msg["id"]);
         console.dir(msg);
         $('tr#'+msg["id"]).remove();
+        $(".sticky[data-id='"+msg['id']+"']").remove();
       }
     });
 });

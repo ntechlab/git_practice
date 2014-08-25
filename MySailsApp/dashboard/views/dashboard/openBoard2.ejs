@@ -18,13 +18,13 @@
   }
 
   // チケット作成
-  function createTicket(){
-    console.log("createTicket");
+  function createTicket(x, y){
+    console.log("createTicket:" + x + "," + y);
     io.socket.get('/board/process/', 
     {actionType:"create", 
      contents: $('#contents').val(), 
-     positionX: 0,//$('#contents').css('left'), 
-     positionY: 0,//$('#contents').css('top'), 
+     positionX: x + "px",
+     positionY: y + "px",
      color: $('#color').val(),
      boardId : <%= boardId %>,
      userId : <%= loginUserId %>});
@@ -94,8 +94,25 @@
 
   // jQueryオンロード処理
   $(function(){
+  var posX, posY;
+  $('#board').contextMenu('myMenu1', {
+      bindings: {
+        'create': function(t) {
+	 createTicket(posX, posY);
+	 posX = 0;
+	 posY = 0;
+        }
+      },
+      onContextMenu: function(event){
+        var top = $('#board').offset().top;
+        var left = $('#board').offset().left;
+        posX = event.pageX - left;
+        posY = event.pageY - top;
+        return true;
+      }
+    });
 
-　　// 付箋データをhtml上に展開。
+    // 付箋データをhtml上に展開。
     var ticketData = [<% for( var k in list ) {%>
       {id: <%= list[k].id %>, 
        positionX : '<%= list[k].positionX %>',
@@ -212,7 +229,7 @@ textarea {
 <div>
   新規作成チケットの内容<br>
   <textarea id="contents" style="width: 300px;"></textarea><br>
-  <input type="button" value="新規作成" onclick="createTicket()"/>
+  <input type="button" value="新規作成" onclick="createTicket(0,0)"/>
   <select id="color">
     <option value="#ffc">黄色</option>
     <option value="#fcc">赤色</option>
@@ -222,10 +239,14 @@ textarea {
 
 </div>
 </div>
-
 <form method="POST">
   <input type="hidden" name="boardId" value="<%= boardId %>" />
   <input type="hidden" name="userId" value="<%= loginUserId %>" />
   <input type="button" value="戻る" onclick="back()" />
   <input type="button" value="ログアウト" onclick="logout()" />
 </form>
+<div class="contextMenu" id="myMenu1">
+  <ul>
+    <li id="create">作成</li>
+  </ul>
+</div>

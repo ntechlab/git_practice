@@ -18,14 +18,14 @@
   }
 
   // チケット作成
-  function createTicket(x, y){
+  function createTicket(x, y, color){
     console.log("createTicket:" + x + "," + y);
     io.socket.get('/board/process/', 
     {actionType:"create", 
      contents: $('#contents').val(), 
      positionX: x + "px",
      positionY: y + "px",
-     color: $('#color').val(),
+     color: color,
      boardId : <%= boardId %>,
      userId : <%= loginUserId %>});
   }
@@ -110,23 +110,26 @@
 
   // jQueryオンロード処理
   $(function(){
-  var posX, posY;
-  $('#board').contextMenu('myMenu1', {
-      bindings: {
-        'create': function(t) {
-         createTicket(posX, posY);
-         posX = 0;
-         posY = 0;
-        }
-      },
-      onContextMenu: function(event){
+
+
+  $("body").contextmenu({
+    delegate: ".hasmenu",
+    menu: [
+        {title: "作成", children: [
+            {title: "青", cmd: "#ccf"},
+            {title: "黄", cmd: "#ffc"},
+            {title: "赤", cmd: "#fcc"}
+            ]}
+        ],
+    select: function(event, ui) {
+        var $menu=$('#ui-id-1');
         var top = $('#board').offset().top;
         var left = $('#board').offset().left;
-        posX = event.pageX - left;
-        posY = event.pageY - top;
-        return true;
-      }
-    });
+        var posX = $menu.offset().left - left;
+        var posY = $menu.offset().top - top;
+	createTicket(posX, posY, ui.cmd);
+    }
+  });
 
     // 付箋データをhtml上に展開。
     var ticketData = [<% for( var k in list ) {%>
@@ -197,27 +200,64 @@ table th {
 }
 
 .sticky {
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.4);
   width: 250px;
-  height: 50px;
+  height: 100px;
   position: absolute;
   cursor: pointer;
   border: 1px solid #aaa;
+  font-size:16pt;
 }
+
 textarea {
   width: 100%;
   height: 100%;
+  font-size: 16pt;
+
 }
+
 .selected {border-color: #f44;}
 
+.hasmenu {
+//  border: 1px solid #008;
+//  margin: 3px;
+//  padding: 5px;
+//  width: 30px;
+}
+
+.ui-widget{
+  font-size: 1em;
+}
+
+.ui-menu {
+  width: 90px;
+}
+
+#board {
+  background-image:url(/images/background01.jpg);
+  background-repeat: repeat;
+  position:relative;
+//  background-color: #F7BE81;
+  width: 1500px;
+  height: 800px;
+}
 </style>
-<h1>チケットリスト</h1>
 ログインユーザー:<%= loginUserId %><br>
 <table id="info" border="1">
-  <tr><th>ID</th><td><%= boardId %></td></tr>
+  <tr><th>ボードID</th><td><%= boardId %></td></tr>
   <tr><th>タイトル</th><td><%= title %></td></tr>
   <tr><th>説明</th><td><%= description %></td></tr>
 </table>
-<br>
+<form method="POST">
+  <input type="hidden" name="boardId" value="<%= boardId %>" />
+  <input type="hidden" name="userId" value="<%= loginUserId %>" />
+  <input type="button" value="戻る" onclick="back()" />
+  <input type="button" value="ログアウト" onclick="logout()" />
+<div>
+  <div id="board" class="hasmenu">
+</div>
+</div>
+<br><br>
 <table id="tickets" border="1">
   <tr>
     <th>ID</th>
@@ -240,28 +280,4 @@ textarea {
   </tr>
 <% } %>
 </table>
-<br>
-<div>
-  新規作成チケットの内容<br>
-  <textarea id="contents" style="width: 300px;"></textarea><br>
-  <input type="button" value="新規作成" onclick="createTicket(0,0)"/>
-  <select id="color">
-    <option value="#ffc">黄色</option>
-    <option value="#fcc">赤色</option>
-    <option value="#cfc">緑色</option>
-  </select>
-  <div id="board" style="position:relative; background-color: #F7BE81; width: 500px; height: 300px;">
-
-</div>
-</div>
-<form method="POST">
-  <input type="hidden" name="boardId" value="<%= boardId %>" />
-  <input type="hidden" name="userId" value="<%= loginUserId %>" />
-  <input type="button" value="戻る" onclick="back()" />
-  <input type="button" value="ログアウト" onclick="logout()" />
 </form>
-<div class="contextMenu" id="myMenu1">
-  <ul>
-    <li id="create">作成</li>
-  </ul>
-</div>

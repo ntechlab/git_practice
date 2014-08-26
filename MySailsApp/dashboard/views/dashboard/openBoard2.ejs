@@ -22,7 +22,7 @@
     console.log("createTicket:" + x + "," + y);
     io.socket.get('/board/process/', 
     {actionType:"create", 
-     contents: $('#contents').val(), 
+     contents: "", 
      positionX: x + "px",
      positionY: y + "px",
      color: color,
@@ -234,7 +234,7 @@ textarea {
 }
 
 #board {
-  background-image:url(/images/background01.jpg);
+  background-image:url(/images/background02.gif);
   background-repeat: repeat;
   position:relative;
 //  background-color: #F7BE81;

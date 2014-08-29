@@ -162,13 +162,15 @@ module.exports = {
 
     editBoard : function(req, res) {
 	var id = req.param("selectedId");
+	var loginUserId = Utility.getLoginUserId(req, res);
 	console.log("selected id:"+id);
 	Board.findOne(id).exec(function(err,found){
 	    console.log("edit board:found["+found+"]");
 	    console.dir(found);
     	    res.view({ id: id, 
 		       title :found["title"], 
-		       description:found["description"]});
+		       description:found["description"],
+		       loginUserId: loginUserId});
     	});
     },
 

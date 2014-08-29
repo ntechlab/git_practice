@@ -41,12 +41,17 @@ module.exports = {
     destroyUser : function(req, res) {
 	console.log("destroyUser called");
 	var target = req.param('target');
+	if(target){
 	var loginUserId = Utility.getLoginUserId(req, res);
 	User.destroy(target).exec(function(err, found) {
 	    User.find({}).exec(function(err, usersFound) {
 		res.redirect('/usermanage/index');
 	    });
 	});
+	} else {
+	  console.log("destroy userid not given");
+		res.redirect('/usermanage/index');
+	}
     },
 
     updateUser : function(req, res) {

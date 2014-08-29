@@ -1,9 +1,20 @@
+<link type="text/css" rel="stylesheet" href="/css/smoothness/jquery-ui.min.css" />
 <script>
   function create(){
+   var title = $('#title').val();
+   if(title.trim() == ""){
+   alert('タイトルを入力してください。');
+   return false;
+   }
+   $('#title').val(title.trim());
     submit("/board/createBoard");
   }
 
   function cancel(){
+    submit("/dashboard/index");
+  }
+
+  function home(){
     submit("/dashboard/index");
   }
 
@@ -17,22 +28,68 @@
     form.submit();
   }
 </script>
-<h1>新規作成</h1>
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+<style>
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+</style>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://getbootstrap.com/examples/theme/#">付箋アプリ</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a onclick="home()"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active"><a onclick="home()"><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
+           <li class="navbar-text"><span class="glyphicon glyphicon-user">&nbsp;</span>（▲暫定　ユーザーＩＤ　<%= loginUserId %>）</li>
+            <li class="navbar-right"  ><a onclick="logout()">ログアウト</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container theme-showcase" role="main">
+<h3>新規作成</h3>
 <form name="main" method="POST">
   <div>
-    タイトルと説明を記述してください。
-  </div>
-  <div>
-    <div>
-      タイトル
-      <input type="text" name="title" value="無題"/>
+    <div class="form-group">
+      <label for="exampleInputEmail1">タイトル</label>
+      <input class="form-control"  name="title" id="title" placeholder="ボードのタイトルを入力してください。">
     </div>
-    <div>
-      説明
-      <textarea name="description">説明文</textarea>
+   <div class="form-group">
+      <label for="exampleInputEmail1">説明</label>
+      <textarea class="form-control" rows="4" name="description" id="description" placeholder="ボードの説明を入力してください。"></textarea>
     </div>
-    <input type="button" value="新規作成" onclick="create()"/>
-    <input type="button" value="キャンセル" onclick="cancel()"/>
-    <input type="button" value="ログアウト" onclick="logout()"/>
+    <button type="submit" class="btn btn-default" onclick="return create()" >新規作成</button>
+    <button type="submit" class="btn btn-default" onclick="cancel()"/>キャンセル</button>
   </div>
 </form>
+</div>

@@ -1,3 +1,4 @@
+<link type="text/css" rel="stylesheet" href="/css/smoothness/jquery-ui.min.css" />
 <script>
   // ユーザー作成
   function createUser(){
@@ -20,9 +21,12 @@
   // 戻る
   function back(){
     console.log("back");
+    submit("/usermanage/index");
+  }
+  
+  function home(){
     submit("/dashboard/index");
   }
-
   // ログアウト
   function logout(){
     console.log("logout");
@@ -36,13 +40,72 @@
   }
 
 </script>
-<h1>ユーザー作成</h1>
-ログインユーザー:<%= loginUserId %><br>
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+<style>
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+</style>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://getbootstrap.com/examples/theme/#">付箋アプリ</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a onclick="home()"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active"><a onclick="back()"><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
+           <li class="navbar-text"><span class="glyphicon glyphicon-user">&nbsp;</span>（▲暫定　ユーザーＩＤ　<%= loginUserId %>）</li>
+            <li class="navbar-right"  ><a onclick="logout()">ログアウト</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container theme-showcase" role="main">
 <form method="POST">
-ユーザーＩＤ：<input id="username" name="username" /><br>
-パスワード：<input id="password" name="password" /><br>
-ニックネーム：<input id="nickname" name="nickname" /><br>
-  <input type="button" value="新規作成" onclick="createUser()" />
-  <input type="button" value="戻る" onclick="back()" />
-  <input type="button" value="ログアウト" onclick="logout()" />
+<h3>ユーザー作成</h3>
+ <div class="form-group">
+    <label for="username">アカウント</label>
+    <input class="form-control" name="username" id="username" placeholder="アカウントを入力">
+  </div>
+  
+   <div class="form-group">
+    <label for="password">パスワード</label>
+    <input type="password" class="form-control" name="password" id="password" placeholder="パスワードを入力">
+  </div>
+  
+   <div class="form-group">
+    <label for="nickname">ユーザー名</label>
+    <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力">
+  </div>
+  <button type="submit" class="btn btn-default" onclick="createUser()" >新規作成</button>
+  <button type="submit" class="btn btn-default" onclick="back()" >キャンセル</button>
 </form>
+</div>

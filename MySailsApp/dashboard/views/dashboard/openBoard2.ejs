@@ -135,15 +135,8 @@
     }
   });
 
-    // 付箋データをhtml上に展開。
-    var ticketData = [<% for( var k in list ) {%>
-      {id: <%= list[k].id %>, 
-       positionX : '<%= list[k].positionX %>',
-       positionY : '<%= list[k].positionY %>', 
-       color : '<%= list[k].color %>',
-       contents : '<%= list[k].contents %>'},
-    <%}%>
-    ];
+    // 付箋データ
+    var ticketData = <%- JSON.stringify(ticketData) %>;
 
     // 付箋データから付箋を作成し、ボードに追加。
     for(var i = 0; i < ticketData.length; i++){

@@ -149,6 +149,7 @@ module.exports = {
 		 	      loginUserId: loginUserId,
 		 	      title : found["title"], 
 		 	      description: found["description"],
+			      ticketData : tickets,
 		 	      list : tickets}; 
 		    console.dir(obj);
     		    res.view(obj);

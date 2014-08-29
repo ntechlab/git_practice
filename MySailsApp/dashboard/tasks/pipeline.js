@@ -35,7 +35,9 @@ var jsFilesToInject = [
   'js/jquery-2.1.1.min.js',
   'js/jquery-ui.min.js',
   'js/jquery.ui-contextmenu.min.js',
-  'js/bootstrap.min.js'
+  'js/bootstrap.min.js',
+  'js/jquery.ui.touch-punch.min.js',
+  'js/jquery.event.dblTap.js'
 ];
 
 

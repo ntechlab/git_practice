@@ -60,7 +60,8 @@
           }
         }
       })
-      .dblclick(function() {
+      .bind("dblTap",function(){
+//      .dblclick(function() {
         var $self = $(this);
         var id0 = data["id"];
         $self.html('<textarea>' + $self.html() + '</textarea>')
@@ -114,7 +115,6 @@
 
   // jQueryオンロード処理
   $(function(){
-
 
   $("body").contextmenu({
     delegate: ".hasmenu",

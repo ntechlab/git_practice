@@ -58,6 +58,22 @@ body {
   //width: auto;
 }
 
+.hovereffect_light {
+ color: white;
+}
+
+.hovereffect_light:hover {
+color:#86cecb;
+}
+
+.hovereffect_dark {
+ color: black;
+}
+
+.hovereffect_dark:hover {
+color:#86cecb;
+}
+
 </style>
 <script>
   function home(){
@@ -107,14 +123,14 @@ body {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" style="color:white;" href="https://github.com/ntechlab/git_practice" tabindex=-1 >付箋アプリ（仮）</a>
+          <a class="navbar-brand" style="color:white;" href="https://github.com/ntechlab/git_practice" tabindex=-1 ><span class="hovereffect_light">付箋アプリ（仮）</span></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a onclick="home()" tabindex=-1><span class="glyphicon glyphicon-home"></span></a></li>
-            <li class="active"><a onclick="back()" tabindex=-1><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
-           <li class="navbar-text" style="color:white"><span class="glyphicon glyphicon-user">&nbsp;</span><%= loginUserName %></li>
-            <li class="navbar-right" tabindex=-1><a style="color:white" onclick="logout()" tabindex=-1>ログアウト</a></li>
+            <li class="active"><a onclick="home()" tabindex=-1><span class="glyphicon glyphicon-home hovereffect_light"></span></a></li>
+            <li class="active"><a onclick="back()" tabindex=-1><span class="glyphicon glyphicon-circle-arrow-left hovereffect_light"></span></a></li>
+            <li class="navbar-text" style="color:white"><span class="hovereffect_light"><span class="glyphicon glyphicon-user">&nbsp;</span><%= loginUserName %></span></li>
+            <li class="navbar-right" tabindex=-1><a  onclick="logout()" tabindex=-1><span class="hovereffect_light">ログアウト</span></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

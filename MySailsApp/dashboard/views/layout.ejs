@@ -31,7 +31,8 @@
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
-    
+
+    <link rel="stylesheet" href="/css/smoothness/jquery-ui.min.css">
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
@@ -66,9 +67,26 @@ body {
   }
 
   function logout(){
-      submit("/auth/logout");
+    showConfirmLogoutDialog();
   }
-
+  
+  function showConfirmLogoutDialog(){
+    $("#confirmLogout").dialog({
+      modal: true,
+      resizable: false,
+      draggable: false,
+      buttons: {
+        "はい": function() {
+          $(this).dialog("close");
+             submit("/auth/logout");
+        },
+        "いいえ": function() {
+          $(this).dialog("close");
+        }
+      }
+    });
+  }
+  
   function submit(action){
     var form = document.forms.item(0);
     form.action = action;
@@ -165,4 +183,10 @@ body {
     <script src="/js/jquery.event.dblTap.js"></script>
 
   </body>
+<div id="confirmLogout" title="ログアウトの確認" style="display:none">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
+    ログアウトします。よろしいですか？
+  </p>
+</div>
 </html>

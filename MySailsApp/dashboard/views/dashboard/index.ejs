@@ -1,7 +1,7 @@
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+
 <script>
-function logout(){
-    submit("/auth/logout");
-}
 
 function openBoard(){
     submit("/dashboard/openBoard");
@@ -16,10 +16,21 @@ function editBoard(){
 }
 
 function deleteBoard(){
-    if(confirm("削除します。よろしいですか？")){
-	submit("/dashboard/deleteBoard");
-    }
-    return false; 
+  $("#confirmDeleteBoard").dialog({
+      modal: true,
+      resizable: false,
+      draggable: false,
+      buttons: {
+        "はい": function() {
+          $(this).dialog("close");
+          submit("/dashboard/deleteBoard");
+        },
+        "いいえ": function() {
+          $(this).dialog("close");
+          return false;
+        }
+      }
+    });
 }
 
 function createBoard(){
@@ -54,9 +65,14 @@ function userManage(){
       <div class="well" style="margin-top:10px">ボードの説明を表示予定。</div>
   <button type="submit" class="btn btn-default" onclick="createBoard()" >新規作成</button><br><br>
   <button type="submit" class="btn btn-default" onclick="userManage()">ユーザー管理画面</button>
-
     </div> <!-- /container -->
 
 <input type="hidden" name="loginUserId" value="<%= loginUserId %>"/>
 
 </form>
+<div id="confirmDeleteBoard" title="ボード削除の確認" style="display:none">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
+    ボードを削除します。よろしいですか？
+  </p>
+</div>

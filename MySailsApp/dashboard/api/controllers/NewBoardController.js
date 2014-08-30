@@ -9,8 +9,8 @@ module.exports = {
     
     index : function(req, res) {
     
-	var loginUserId = Utility.getLoginUserId(req, res);
-	res.view({loginUserId: loginUserId});
+	var loginUserInfo = Utility.getLoginUserId(req, res);
+	res.view({loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
     }
 };
 

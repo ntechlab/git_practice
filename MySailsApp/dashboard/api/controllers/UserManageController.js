@@ -10,23 +10,23 @@ module.exports = {
 
     index : function(req, res) {
 	console.log("open UserManage");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	User.find({}).exec(function(err, usersFound) {
-            res.view({users: usersFound, loginUserId: loginUserId});
+            res.view({users: usersFound, loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
 	});
     },
 
     openCreate : function(req, res) {
 	console.log("openCreate called");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	User.find({}).exec(function(err, usersFound) {
-            res.view({users: usersFound, loginUserId: loginUserId});
+            res.view({users: usersFound,  loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
 	});
     },
 
     createUser : function(req, res) {
 	console.log("createUser called");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	User.create({
 	    username: req.param('username'),
 	    password: req.param('password'),
@@ -42,7 +42,7 @@ module.exports = {
 	console.log("destroyUser called");
 	var target = req.param('target');
 	if(target){
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	User.destroy(target).exec(function(err, found) {
 	    User.find({}).exec(function(err, usersFound) {
 		res.redirect('/usermanage/index');
@@ -57,7 +57,7 @@ module.exports = {
     updateUser : function(req, res) {
 	var target = req.param('target');
 	console.log("User info changed:"+target);
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	User.findOne(target).exec(function(err, oldUser) {
 	    var newData = {};
 	    var newUsername = req.param('username');
@@ -89,13 +89,14 @@ module.exports = {
 
     openUpdateUser : function(req, res) {
 	console.log("openUpdateUser called");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	var id = req.param("target");
 	User.findOne(id).exec(function(err, found){
 	    res.view({username: found["username"],
 		      nickname: found["nickname"],
 		      target: id,
-		      loginUserId: loginUserId});
+		      loginUserId: loginUserInfo["id"],
+		      loginUserName: loginUserInfo["name"]});
 	});
     },
 };

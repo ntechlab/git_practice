@@ -8,15 +8,15 @@
 module.exports = {
 
     index : function(req, res) {
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	Board.find({}).exec(function(err,found){
-            res.view({list: found, loginUserId: loginUserId});
+		res.view({list: found, loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
 	});
     },
 
     openBoard : function(req, res) {
 	var boardId = req.param("selectedId");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	console.log("selected boardId:"+boardId);
 
 	var wait = function (callbacks, done) {
@@ -70,7 +70,8 @@ module.exports = {
 		var createViewWrapper = function (){
 		    console.log("createViewWrapper called");
 		    var obj = {boardId: boardId, 
-		 	      loginUserId: loginUserId,
+		 	      loginUserId: loginUserInfo["id"],
+		 	      loginUserName: loginUserInfo["name"],
 		 	      title : found["title"], 
 		 	      description: found["description"],
 		 	      list : tickets}; 
@@ -92,7 +93,7 @@ module.exports = {
 	    res.redirect("/dashboard/index");
 	    return;
 	}
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	console.log("selected boardId:"+boardId);
 
 	var wait = function (callbacks, done) {
@@ -146,12 +147,13 @@ module.exports = {
 		var createViewWrapper = function (){
 		    console.log("createViewWrapper called");
 		    var obj = {boardId: boardId, 
-		 	      loginUserId: loginUserId,
-		 	      title : found["title"], 
-		 	      description: found["description"],
+			      loginUserId: loginUserInfo["id"],
+			      loginUserName: loginUserInfo["name"],
+			      title : found["title"], 
+			      description: found["description"],
 			      ticketData : tickets,
-		 	      list : tickets}; 
-		    console.dir(obj);
+			      list : tickets}; 
+			    console.dir(obj);
     		    res.view(obj);
 		};
 
@@ -163,7 +165,7 @@ module.exports = {
 
     editBoard : function(req, res) {
 	var id = req.param("selectedId");
-	var loginUserId = Utility.getLoginUserId(req, res);
+	var loginUserInfo = Utility.getLoginUserId(req, res);
 	console.log("selected id:"+id);
 	Board.findOne(id).exec(function(err,found){
 	    console.log("edit board:found["+found+"]");
@@ -171,7 +173,8 @@ module.exports = {
     	    res.view({ id: id, 
 		       title :found["title"], 
 		       description:found["description"],
-		       loginUserId: loginUserId});
+		       loginUserId: loginUserInfo["id"],
+		       loginUserName: loginUserInfo["name"]});
     	});
     },
 

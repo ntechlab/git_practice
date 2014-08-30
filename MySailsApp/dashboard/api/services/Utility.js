@@ -1,8 +1,10 @@
 exports.getLoginUserId = function(req, res){
-	var ret = "";
+	var id = "";
+	var nickname = "";
 	if(req.session != null && req.session.passport != null){
-	    ret = req.session.passport.user || "";
+	    id = req.session.passport.user || "";
+	    nickname = req.session.passport.name || "";
+	    console.dir(req.session.passport);
 	}
-	console.log("getLoginUserId -> "+ret);
-	return ret;
+	return {id: id, name: nickname};
 }

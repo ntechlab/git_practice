@@ -10,7 +10,7 @@ var passport = require("passport");
 module.exports = {
 	login : function(req, res) {
 		console.log("login action");
-		res.view("auth/login", {loginUserId :""});
+		res.view("auth/login", {loginUserId :"", loginUserName :""});
 	},
 
 	process : function(req, res) {
@@ -25,6 +25,7 @@ module.exports = {
 					res.redirect('/login');
 				}
 				console.log("login ok ");
+				req.session.passport["name"] = user[0]["nickname"];
 				return res.redirect('/dashboard');
 			});
 		})(req, res);
@@ -32,7 +33,10 @@ module.exports = {
 
 	logout : function(req, res) {
 		req.logout();
-		res.redirect("/login");
+		if (req.session && req.session.passport) {
+			req.session.passport["name"] = "";
+		}
+		res.redirect('/login');
 	},
 	_config : {}
 };

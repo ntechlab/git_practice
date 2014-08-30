@@ -1,4 +1,7 @@
 <script>
+function logout(){
+    submit("/auth/logout");
+}
 
 function openBoard(){
     submit("/dashboard/openBoard");
@@ -19,85 +22,17 @@ function deleteBoard(){
     return false; 
 }
 
-
-
 function createBoard(){
     submit("/dashboard/createBoard");
-}
-
-function logout(){
-    submit("/auth/logout");
 }
 
 function userManage(){
     submit("/usermanage/index");
 }
-
-function submit(action){
-    var form = document.forms.item(0);
-    form.action = action;
-    form.submit();
-}
-
 </script>
-
-    <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
-<style>
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
-}
-
-.theme-dropdown .dropdown-menu {
-  position: static;
-  display: block;
-  margin-bottom: 20px;
-}
-
-.theme-showcase > p > .btn {
-  margin: 5px 0;
-}
-
-.theme-showcase .navbar .container {
-  width: auto;
-}
-
-</style>
-</head>
-  <body role="document">
-
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="http://getbootstrap.com/examples/theme/#" tabindex=-1>付箋アプリ</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a onclick="alert('▲暫定：戻れません。')"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li class="active"><a onclick="alert('▲暫定：戻れません。')"><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
-           <li class="navbar-text"><span class="glyphicon glyphicon-user">&nbsp;</span>（▲暫定　ユーザーＩＤ　<%= loginUserId %>）</li>
-            <li class="navbar-right"  ><a onclick="logout()">ログアウト</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-
-    <div class="container theme-showcase" role="main">
- 
+<div class="container theme-showcase" role="main">
 <form name="main" method="POST">
-      
-      <div class="row">
-  
+<div class="row">
   <div class="col-lg-6">
     <div class="input-group">
    <select name="selectedId" class="form-control">

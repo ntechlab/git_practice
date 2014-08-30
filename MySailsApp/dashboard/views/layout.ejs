@@ -31,12 +31,78 @@
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
+    
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+
+<style>
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  //width: auto;
+}
+
+</style>
+<script>
+  function home(){
+  }
+
+  function back(){
+  }
+
+  function logout(){
+      submit("/auth/logout");
+  }
+
+  function submit(action){
+    var form = document.forms.item(0);
+    form.action = action;
+    form.submit();
+  }
+</script>
   </head>
 
-  <body>
+  <body role="document">
+  
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="color:white;" href="https://github.com/ntechlab/git_practice" tabindex=-1 >付箋アプリ（仮）</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a onclick="home()" tabindex=-1><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active"><a onclick="back()" tabindex=-1><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
+           <li class="navbar-text" style="color:white"><span class="glyphicon glyphicon-user">&nbsp;</span>ユーザ名 <%= loginUserId %></li>
+            <li class="navbar-right" tabindex=-1><a style="color:white" onclick="logout()" tabindex=-1>ログアウト</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    
     <%- body %>
-
-
 
     <!--
         Client-side Templates

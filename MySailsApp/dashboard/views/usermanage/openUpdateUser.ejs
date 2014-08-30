@@ -1,6 +1,12 @@
-<link type="text/css" rel="stylesheet" href="/css/smoothness/jquery-ui.min.css" />
 <script>
-
+  function home(){
+    submit("/dashboard/index");
+  }
+  
+  function back(){
+    submit("/usermanage/index");
+  }
+  
   // ユーザー更新
   function updateUser(){
     if($('#username').val() == ''){
@@ -13,74 +19,8 @@
     }
     submit("/usermanage/updateUser");
   }
-
-  // 戻る
-  function back(){
-    console.log("back");
-    submit("/usermanage/index");
-  }
-
-  // ログアウト
-  function logout(){
-    console.log("logout");
-    submit("/auth/logout");
-  }
-
-  function submit(action){
-    var form = document.forms.item(0);
-    form.action = action;
-    form.submit();
-  }
 </script>
-    <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
-<style>
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
-}
-
-.theme-dropdown .dropdown-menu {
-  position: static;
-  display: block;
-  margin-bottom: 20px;
-}
-
-.theme-showcase > p > .btn {
-  margin: 5px 0;
-}
-
-.theme-showcase .navbar .container {
-  width: auto;
-}
-
-</style>
-
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="http://getbootstrap.com/examples/theme/#">付箋アプリ</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a onclick="home()"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li class="active"><a onclick="back()"><span class="glyphicon glyphicon-circle-arrow-left"></span></a></li>
-           <li class="navbar-text"><span class="glyphicon glyphicon-user">&nbsp;</span>（▲暫定　ユーザーＩＤ　<%= loginUserId %>）</li>
-            <li class="navbar-right"  ><a onclick="logout()">ログアウト</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-    <div class="container theme-showcase" role="main">
+<div class="container theme-showcase" role="main">
 <form method="POST">
 <h3>ユーザー情報更新</h3>
  <div class="form-group">

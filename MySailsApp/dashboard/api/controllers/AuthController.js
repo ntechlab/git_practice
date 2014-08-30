@@ -10,7 +10,7 @@ var passport = require("passport");
 module.exports = {
 	login : function(req, res) {
 		console.log("login action");
-		res.view("auth/login");
+		res.view("auth/login", {loginUserId :""});
 	},
 
 	process : function(req, res) {

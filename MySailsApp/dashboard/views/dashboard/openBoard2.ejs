@@ -4,6 +4,43 @@
 
 <script>
 
+  function T(){
+    var self = this;
+    
+    this.encode1 = function encode1(input){
+      var ret = input;
+      ret=ret.replace(/&/g, "&amp;");
+      ret=ret.replace(/</g, "&lt;");
+      ret=ret.replace(/>/g, "&gt;");
+      ret = self.NLtoBR(ret);
+      return ret;  
+    };
+
+    this.encode2 = function encode2(input){
+      var ret = input;
+      ret=self.BRtoNL(ret);
+      ret=ret.replace(/</g, "&lt;");
+      ret=ret.replace(/>/g, "&gt;");  
+      return ret;
+    };
+    
+    this.BRtoNL = function BRToNL(input){
+      var ret = input;
+      ret=ret.replace(/<br\s*[\/]?>/gi, "\n");
+      return ret;
+    };
+    
+    this.NLtoBR = function NLtoBR(input){
+      var ret = input;
+      ret=ret.replace(/\r\n/g, '<br />');
+      ret=ret.replace(/\r/g, '<br />');
+      ret=ret.replace(/\n/g, '<br />');
+      return ret;
+    }
+  }
+
+  var t = new T();
+ 
   function home(){
     submit("/dashboard/index");
   }
@@ -37,7 +74,8 @@
   function make(data) {
    var val = data["contents"];
    var sticky = $('<div class="sticky"></div>');
-   sticky.text(val);
+   val=t.NLtoBR(val);
+   sticky.html(val);
    sticky.appendTo('#board')
       .attr('data-id', data["id"])
       .css('background-color', data["color"])
@@ -64,14 +102,18 @@
 //      .dblclick(function() {
         var $self = $(this);
         var id0 = data["id"];
-        $self.html('<textarea>' + $self.html() + '</textarea>')
+        var c = $self.html();
+        c=t.encode2(c);
+        $self.html('<textarea>' + c + '</textarea>')
           .children()
           .focus()
           .blur(function() {
-            $(this).parent().html($(this).val());
-            var $sticky = $self.closest('.sticky');
-            updateFusen($sticky);
-          });
+          var c2 = $(this).val();
+          c2 = t.encode1(c2);     
+          $(this).parent().html(c2);
+          var $sticky = $self.closest('.sticky');
+          updateFusen($sticky);
+        });
       }).mousedown(function() {
         $('.sticky').removeClass('selected');
         $(this).addClass('selected');
@@ -91,7 +133,9 @@
     newData["id"] = $target.data('id');
     newData["positionX"] = $target.css('left');
     newData["positionY"] = $target.css('top');
-    newData["contents"] = $target.text();
+    var cc = $target.html();
+    cc=t.BRtoNL(cc);
+    newData["contents"] = cc;
     console.dir(newData);
     io.socket.get('/board/process/', newData);
   }
@@ -176,7 +220,9 @@
         var $sticky = $(".sticky[data-id='"+msg['id']+"']");
         $sticky.css('left', data["positionX"]);
         $sticky.css('top', data["positionY"]);
-        $sticky.text(data["contents"]);
+        var ccc = data["contents"];
+        ccc=t.NLtoBR(ccc);
+        $sticky.html(ccc);
       } else if(msg.verb == "destroyed"){
         console.log("チケットを削除します:"+msg["id"]);
         console.dir(msg);

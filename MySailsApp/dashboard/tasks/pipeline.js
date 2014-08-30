@@ -32,12 +32,6 @@ var jsFilesToInject = [
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
   //  'js/**/*.js'
-  'js/jquery-2.1.1.min.js',
-  'js/jquery-ui.min.js',
-  'js/jquery.ui-contextmenu.min.js',
-  'js/bootstrap.min.js',
-  'js/jquery.ui.touch-punch.min.js',
-  'js/jquery.event.dblTap.js'
 ];
 
 

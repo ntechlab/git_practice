@@ -7,18 +7,95 @@
     submit("/usermanage/index");
   }
   
+  function autotrim(items){
+    for(var i = 0; i < items.length;i++){
+      var item = items[i];
+      $(item).val($(item).val().trim());
+    }
+  }
+  
   // ユーザー更新
   function updateUser(){
-    if($('#username').val() == ''){
-      alert('ユーザ名を入力してください。');
-      return false;
-    }
-    if($('#nickname').val() == ''){
-      alert('ニックネームを入力してください。');
-      return false;
-    }
-    submit("/usermanage/updateUser");
+    autotrim(["#username", "#nickname"]);
+    var username = $('#username').val();
+    var nickname = $('#nickname').val();
+    var password = $('#password').val();
+	if(username === '<%= username %>' && nickname === '<%= nickname %>' && password.trim() === ''){
+		 $("#alertUpdate").dialog({
+	      modal: true,
+	      resizable: false,
+	      draggable: false,
+	      buttons: {
+	        "OK": function() {
+	          $(this).dialog("close");
+	        }
+	      }
+	    });
+        return false;
+	}
+    var checkResult = $('form').valid();
+	if(checkResult){
+		submit("/usermanage/updateUser");
+	} else {
+		return false;
+	}
+	
   }
+  
+  
+  function init(){
+    setUpValidation();
+  }
+  
+  function setUpValidation(){
+	$("form").validate({
+		rules: {
+			username :{
+				required: true,
+				minlength: 4,
+				maxlength: 20
+			},
+			password :{
+				required: false,
+				minlength: 6,
+				maxlength: 20
+			},
+			password_confirm :{
+				required: false,
+				minlength: 6,
+				maxlength: 20,
+				equalTo: "#password"
+			},
+			nickname :{
+				required: true,
+				maxlength: 12
+			}
+		},
+		messages: {
+			username :{
+				required: "アカウント名を入力してください",
+				minlength: "4文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。"
+			},
+			password :{
+				required: "パスワードを入力してください",
+				minlength: "6文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。"
+			},
+			password_confirm :{
+				required: "パスワードを入力してください",
+				minlength: "6文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。",
+				equalTo: "パスワードが一致しません。"
+			},
+			nickname :{
+				required: "名前を入力してください",
+				maxlength: "12文字以上の文字列を入力してください。"
+			}
+		}
+	});
+}
+
 </script>
 <div class="container theme-showcase" role="main">
 <form method="POST">
@@ -30,15 +107,26 @@
   
    <div class="form-group">
     <label for="password">パスワード</label>
-    <input type="password" class="form-control" name="password" id="password" placeholder="パスワードを入力">
+    <input type="password" class="form-control" name="password" id="password" placeholder="パスワードを変更する際に入力して下さい。">
+  </div>
+  
+   <div class="form-group">
+    <label for="password_confirm">パスワード（確認）</label>
+    <input type="password" class="form-control" name="password_confirm" id="password_confirm" placeholder="確認のため、パスワードを再度入力してください。">
   </div>
   
    <div class="form-group">
     <label for="nickname">ユーザー名</label>
     <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力" value="<%= nickname %>">
   </div>
-  <button type="submit" class="btn btn-default" onclick="updateUser()" >更新</button>
-  <button type="submit" class="btn btn-default" onclick="back()" >キャンセル</button>
+  <button type="submit" class="btn btn-default" onclick="return updateUser()" >更新</button>
+  <input type="button" class="btn btn-default" onclick="back()" value="キャンセル" />
   <input type="hidden" name="target" value="<%= target %>" />
 </form>
+</div>
+<div id="alertUpdate" title="ユーザー情報変更" style="display:none">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
+    ユーザー情報が変更されていません。
+  </p>
 </div>

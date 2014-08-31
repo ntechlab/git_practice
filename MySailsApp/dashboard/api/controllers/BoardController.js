@@ -12,9 +12,15 @@ module.exports = {
     },
     
     createBoard : function(req, res) {
-	console.log("create board");
+	var title = req.param('title');
+	console.log("create board:["+title+"]");
+	title = title.trim();
+	if(!title || title.length == 0){
+	  console.log("トリム後のタイトルが空のため処理を中断");
+	  res.redirect("/dashboard/index");
+	}
 	Board.create({
-	    title:req.param('title'), 
+	    title: title, 
 	    description : req.param('description')
 	}).exec(function(err,created){
 	    res.redirect("/dashboard/index");

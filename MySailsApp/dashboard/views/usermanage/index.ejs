@@ -26,6 +26,10 @@
       modal: true,
       resizable: false,
       draggable: false,
+      open: function(){
+      	var focusButton = $(".ui-dialog-buttonset>button:nth-child(2)");
+      	focusButton.focus();
+      },
       buttons: {
         "はい": function() {
           $(this).dialog("close");

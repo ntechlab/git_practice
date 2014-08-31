@@ -10,20 +10,66 @@
   // ユーザー作成
   function createUser(){
     console.log("createUser");
-    if($('#username').val() == ''){
-      alert('ユーザ名を入力してください。');
-      return false;
-    }
-    if($('#password').val() == ''){
-      alert('パスワードを入力してください。');
-      return false;
-    }
-    if($('#nickname').val() == ''){
-      alert('ニックネームを入力してください。');
-      return false;
-    }
-    submit("/usermanage/createUser");
+    var checkResult = $('form').valid();
+	if(checkResult){
+		submit("/usermanage/createUser");
+	} else {
+		return false;
+	}
   };
+  
+  function init(){
+    setUpValidation();
+  }
+  
+  function setUpValidation(){
+	$("form").validate({
+		rules: {
+			username :{
+				required: true,
+				minlength: 4,
+				maxlength: 20
+			},
+			password :{
+				required: true,
+				minlength: 6,
+				maxlength: 20
+			},
+			password_confirm :{
+				required: true,
+				minlength: 6,
+				maxlength: 20,
+				equalTo: "#password"
+			},
+			nickname :{
+				required: true,
+				maxlength: 12
+			}
+		},
+		messages: {
+			username :{
+				required: "アカウント名を入力してください",
+				minlength: "4文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。"
+			},
+			password :{
+				required: "パスワードを入力してください",
+				minlength: "6文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。"
+			},
+			password_confirm :{
+				required: "パスワードを入力してください",
+				minlength: "6文字以上の文字列を入力してください。",
+				maxlength: "20文字以上の文字列を入力してください。",
+				equalTo: "パスワードが一致しません。"
+			},
+			nickname :{
+				required: "名前を入力してください",
+				maxlength: "12文字以上の文字列を入力してください。"
+			}
+		}
+	});
+}
 </script>
 
 <div class="container theme-showcase" role="main">
@@ -31,19 +77,24 @@
 <h3>ユーザー作成</h3>
  <div class="form-group">
     <label for="username">アカウント</label>
-    <input class="form-control" name="username" id="username" placeholder="アカウントを入力">
+    <input class="form-control" name="username" id="username" placeholder="アカウントを入力してください。">
   </div>
   
    <div class="form-group">
     <label for="password">パスワード</label>
-    <input type="password" class="form-control" name="password" id="password" placeholder="パスワードを入力">
+    <input type="password" class="form-control" name="password" id="password" placeholder="パスワードを入力してください。">
+  </div>
+
+   <div class="form-group">
+    <label for="password_confirm">パスワード（確認）</label>
+    <input type="password" class="form-control" name="password_confirm" id="password_confirm" placeholder="確認のため、パスワードを再度入力してください。">
   </div>
   
    <div class="form-group">
     <label for="nickname">ユーザー名</label>
-    <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力">
+    <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力してください。">
   </div>
   <button type="submit" class="btn btn-default" onclick="createUser()" >新規作成</button>
-  <button type="submit" class="btn btn-default" onclick="back()" >キャンセル</button>
+  <input type="button" class="btn btn-default" onclick="back()" value="キャンセル" />
 </form>
 </div>

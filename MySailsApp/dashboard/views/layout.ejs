@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>New Sails App</title>
+    <title>付箋アプリ（仮）</title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
     <!--  
         Stylesheets and Preprocessors
         ==============================
@@ -74,6 +73,11 @@ color:#86cecb;
 color:#86cecb;
 }
 
+label.has-error {
+  color: #FF7F50;
+  margin:3px;
+}
+
 </style>
 <script>
   function home(){
@@ -85,12 +89,16 @@ color:#86cecb;
   function logout(){
     showConfirmLogoutDialog();
   }
-  
+
   function showConfirmLogoutDialog(){
     $("#confirmLogout").dialog({
       modal: true,
       resizable: false,
       draggable: false,
+      open: function(){
+      	var focusButton = $(".ui-dialog-buttonset>button:nth-child(2)");
+      	focusButton.focus();
+      },
       buttons: {
         "はい": function() {
           $(this).dialog("close");
@@ -197,7 +205,39 @@ color:#86cecb;
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/jquery.ui.touch-punch.min.js"></script>
     <script src="/js/jquery.event.dblTap.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
 
+<script>
+
+function initializeValidator(){
+ // Validatorの初期値を変更します
+  $.validator.setDefaults({
+    // NG項目のclass
+    errorClass : 'has-error',
+    // OK項目のclass
+    validClass : 'has-success',
+    // 入力チェックNGの場合、項目のform-groupにerrorClassを設定します
+    highlight : function(element, errorClass, validClass) {
+      $(element).closest('.form-group').addClass(errorClass).removeClass(validClass);
+    },
+    // 入力チェックOKの場合、項目のform-groupにvalidClassを設定します
+    unhighlight : function(element, errorClass, validClass) {
+      $(element).closest('.form-group').removeClass(errorClass).addClass(validClass);
+    }
+  });
+}
+
+$(function(){
+
+  initializeValidator();
+  
+  try {
+    init();
+  } catch(e) {
+    // 初期化関数なし
+  }
+});
+</script>
   </body>
 <div id="confirmLogout" title="ログアウトの確認" style="display:none">
   <p>

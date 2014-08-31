@@ -18,13 +18,12 @@ function cancel(){
 <div class="container theme-showcase" role="main">
 <form name="main" method="POST" >
 <input type="hidden" name="id" value="<%= id %>"/>
-	<h3>タイトルと説明を修正してください。</h3><br>
     <div class="form-group">
-      <label for="exampleInputEmail1">タイトル</label>
+      <label for="title">タイトル</label>
       <input class="form-control"  name="title" id="title" placeholder="ボードのタイトルを修正してください。" value="<%= title %>">
     </div>
    <div class="form-group">
-      <label for="exampleInputEmail1">説明</label>
+      <label for="description">説明</label>
       <textarea class="form-control" rows="4" name="description" id="description" placeholder="ボードの説明を修正してください。"><%= description %></textarea>
     </div>
     <button type="submit" class="btn btn-default" onclick="return save()" >保存</button>

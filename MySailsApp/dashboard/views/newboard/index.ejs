@@ -8,33 +8,39 @@
   }
 
   function create(){
-   var title = $('#title').val();
-   if(title.trim() == ""){
-   alert('タイトルを入力してください。');
-   return false;
-   }
-   $('#title').val(title.trim());
     submit("/board/createBoard");
   }
 
   function cancel(){
     submit("/dashboard/index");
   }
+  
+  function enableCheck(){
+	if($('#title').val().trim() == ""){
+		$('#createBtn').prop('disabled', true);
+	} else {
+		$('#createBtn').prop('disabled', false);
+	}
+  }
+  
+  function init(){
+    enableCheck();
+  }
 </script>
 <div class="container theme-showcase" role="main">
 <h3>新規作成</h3>
-<form name="main" method="POST">
+<form name="main" id="main" method="POST">
   <div>
     <div class="form-group">
-      <label for="exampleInputEmail1">タイトル</label>
-      <input class="form-control"  name="title" id="title" placeholder="ボードのタイトルを入力してください。">
+      <label for="title">タイトル</label>
+      <input class="form-control" name="title" id="title" onkeyup="enableCheck()" placeholder="ボードのタイトルを入力してください。">
     </div>
    <div class="form-group">
-      <label for="exampleInputEmail1">説明</label>
+      <label for="description">説明</label>
       <textarea class="form-control" rows="4" name="description" id="description" placeholder="ボードの説明を入力してください。"></textarea>
     </div>
-    <button type="submit" class="btn btn-default" onclick="return create()" >新規作成</button>
-    <button type="submit" class="btn btn-default" onclick="cancel()"/>キャンセル</button>
+    <button id="createBtn" type="submit" class="btn btn-default" onclick="return create()" >新規作成</button>
+    <input type="button" class="btn btn-default" onclick="cancel()" value="キャンセル"/>
   </div>
 </form>
 </div>

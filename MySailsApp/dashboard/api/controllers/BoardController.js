@@ -38,32 +38,31 @@ module.exports = {
     },
   
   register : function(req, res) {
-    console.log("リスナ登録");
+    var boardId = req.param('boardId');
+    console.log("リスナ登録:["+boardId+"]");
+    var socket = req.socket;
+    var io = sails.io;
     
-    // publishCreate用のリスナ登録
-    Room.watch(req.socket);
-    
-    // publishUpdate, publishDestroy用のリスナ登録
-    if(req.isSocket){
-      Ticket.find({}).exec(function(e, listOfTickets){
-        Room.subscribe(req.socket, listOfTickets);
-      });
-    }
+    // リスナ登録
+    socket.join('room_'+boardId+'_');
   },
   
   // チケットの作成、削除、更新処理アクション
   process : function(req, res) {
+    var socket = req.socket;
+    var io = sails.io;
     var actionType = req.param('actionType');
     var id = req.param('id');
-    var data = req.param('data');
-
-    console.log("チケット処理：id=" + id + ",actionType=" + actionType+", data="+data);
+    var boardId = req.param('boardId');
+    var roomName = "room_"+boardId+"_";
+    console.log("roomName["+roomName+"]");
+    console.log("チケット処理：id=" + id + ",actionType=" + actionType);
     if (actionType == "create") {
       console.log("チケット作成");
-	var userId = req.param('userId');
-	User.findOne(userId).exec(function(err, foundUser) {
+      var userId = req.param('userId');
+      User.findOne(userId).exec(function(err, foundUser) {
 	    Ticket.create({
-		boardId : req.param('boardId'),
+		boardId : boardId,
 		createUser : userId,
 		contents : req.param('contents'),
 		positionX : req.param('positionX'),
@@ -74,7 +73,9 @@ module.exports = {
 		    return console.log(err);
 		} else {
 		    console.log("チケットを作成しました：", ticket);
-		    Room.publishCreate({
+		    io.sockets.in(roomName).emit('message',
+		    {
+		    action: "created",
 			id: ticket.id, 
 			contents: ticket.contents,
 			boardId: ticket.boardId,
@@ -93,7 +94,7 @@ module.exports = {
       }).exec(function(err, found) {
         Ticket.destroy({id: id}).exec(function destroy(err2){
           if(found){
-            Room.publishDestroy(found.id);
+            io.sockets.in(roomName).emit('message',{action: "destroyed", id : found.id});
           }
         });
       });
@@ -109,10 +110,15 @@ module.exports = {
           positionY : y,
           contents : contents
       }).exec(function update(err, updated) {
-        Room.publishUpdate(updated[0].id, 
-			   { positionX: updated[0].positionX,
-			     positionY: updated[0].positionY,
-			     contents: updated[0].contents });
+         if(updated && updated[0]){
+           io.sockets.in(roomName).emit('message',
+             {
+               action : "updated",
+               id : updated[0].id,
+               positionX: updated[0].positionX,
+               positionY: updated[0].positionY,
+               contents: updated[0].contents });
+         }
       });
     }
   }

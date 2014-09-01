@@ -51,14 +51,14 @@
   // チケット削除
   function destroyTicket(id){
     console.log("destroyTicket:" + id);
-    io.socket.get('/board/process/', {actionType:"destroy", id: id});
+    io.socket.get('/board/process/', {actionType:"destroy", boardId : '<%= boardId %>', id: id});
   }
 
   // チケット更新
   function updateTicket(id){
     console.log("updateTicket:"+id);
     var newContents = $('#ta_'+id).val();
-    io.socket.get('/board/process/', {actionType:"update", id: id, contents: newContents});
+    io.socket.get('/board/process/', {actionType:"update", boardId : '<%= boardId %>', id: id, contents: newContents});
   }
 
   // チケット作成
@@ -102,7 +102,6 @@
         }
       })
       .bind("dblTap",function(){
-//      .dblclick(function() {
         var $self = $(this);
         var id0 = data["id"];
         var c = $self.html();
@@ -133,6 +132,7 @@
   function updateFusen($target) {
     var newData = {};
     newData["actionType"] = "update";
+    newData["boardId"] = '<%= boardId %>';
     newData["id"] = $target.data('id');
     newData["positionX"] = $target.css('left');
     newData["positionY"] = $target.css('top');
@@ -176,15 +176,15 @@
     }
 
     console.log("リスナ登録");
-    io.socket.get('/board/register/');
+    io.socket.get('/board/register/',{boardId : '<%= boardId %>'});
 
     // メッセージ受信時に呼び出される関数
-    io.socket.on('room', function(msg) {
-      console.log("メッセージ受信", msg);
-      var data = msg['data'] || {};
+    io.socket.on('message', function(data) {
+      console.log("メッセージ受信", data);
       var id = data["id"];
-      console.log("verb["+msg.verb+"]");
-      if(msg.verb == "created"){
+      var action = data['action'];
+      console.log("action["+action+"]");
+      if(action == "created"){
         console.log("チケットを作成します");
         var ms = "<tr id='"+id+"'>"
                 +"<td>"+id+"</td>"
@@ -200,20 +200,20 @@
         var sticky = make(data);
         $('#board').append(sticky);
 
-      } else if(msg.verb == "updated"){
-        console.log("チケットを更新します:"+msg["id"]+","+data["contents"]);
-        $('#ta_'+msg["id"]).val(data["contents"]);
-        var $sticky = $(".sticky[data-id='"+msg['id']+"']");
+      } else if(action == "updated"){
+        console.log("チケットを更新します:"+data["id"]+","+data["contents"]);
+        $('#ta_'+data["id"]).val(data["contents"]);
+        var $sticky = $(".sticky[data-id='"+data['id']+"']");
         $sticky.css('left', data["positionX"]);
         $sticky.css('top', data["positionY"]);
         var ccc = data["contents"];
         ccc=t.NLtoBR(ccc);
         $sticky.html(ccc);
-      } else if(msg.verb == "destroyed"){
-        console.log("チケットを削除します:"+msg["id"]);
-        console.dir(msg);
-        $('tr#'+msg["id"]).remove();
-        $(".sticky[data-id='"+msg['id']+"']").remove();
+      } else if(action == "destroyed"){
+        console.log("チケットを削除します:"+data["id"]);
+        console.dir(data);
+        $('tr#'+data["id"]).remove();
+        $(".sticky[data-id='"+data['id']+"']").remove();
       }
     });
 });

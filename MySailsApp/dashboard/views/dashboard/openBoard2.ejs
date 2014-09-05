@@ -76,9 +76,12 @@
 
   function make(data) {
    var val = data["contents"];
-   var sticky = $('<div class="sticky"></div>');
+   var nickname = data["nickname"];
+   var sticky = $('<div class="sticky"><div class="userInfo"></div><div id="close"><span class="close">×</span></div><div class="contentsArea"></div></div>');
    val=t.NLtoBR(val);
-   sticky.html(val);
+
+   sticky.find('.userInfo').text(nickname);
+   sticky.find('.contentsArea').html(val);
    sticky.appendTo('#board')
       .attr('data-id', data["id"])
       .css('background-color', data["color"])
@@ -87,22 +90,9 @@
       .draggable({stop: updateFusenListener})
       .click(function(e) {
         console.log("付箋クリックイベント発生");
-        var $self = $(this);
-	var strWidth = $self.css("width");
-	strWidth = strWidth.replace("px","");
-        var width = parseInt(strWidth);
-        var x = e.offsetX;
-        var y = e.offsetY;
-        // 付箋の右上がクリックされた場合には削除するか否かを尋ねる。
-        if(width - x < 20 && y < 20){
-          if(confirm("付箋を削除しますか？")){
-            var id = data["id"];
-            destroyTicket(id);
-          }
-        }
       })
       .bind("dblTap",function(){
-        var $self = $(this);
+        var $self = $(this).find('.contentsArea');
         var id0 = data["id"];
         var c = $self.html();
         c=t.encode2(c);
@@ -120,6 +110,12 @@
         $('.sticky').removeClass('selected');
         $(this).addClass('selected');
       });
+     sticky.find('#close').click(function(){
+     if(confirm("付箋を削除しますか？")){
+       var id = data["id"];
+       destroyTicket(id);
+     }
+    });
     return sticky;
   }
   
@@ -136,7 +132,7 @@
     newData["id"] = $target.data('id');
     newData["positionX"] = $target.css('left');
     newData["positionY"] = $target.css('top');
-    var cc = $target.html();
+    var cc = $target.find(".contentsArea").html();
     cc=t.BRtoNL(cc);
     newData["contents"] = cc;
     console.dir(newData);
@@ -208,7 +204,7 @@
         $sticky.css('top', data["positionY"]);
         var ccc = data["contents"];
         ccc=t.NLtoBR(ccc);
-        $sticky.html(ccc);
+        $sticky.find(".contentsArea").html(ccc);
       } else if(action == "destroyed"){
         console.log("チケットを削除します:"+data["id"]);
         console.dir(data);
@@ -236,6 +232,19 @@ table th {
   cursor: pointer;
   border: 1px solid #aaa;
   font-size:16pt;
+}
+
+.userInfo {
+  width:200px;
+  height:15px;
+  float:left;
+  font-size:10px;
+  color:gray;
+}
+
+.contentsArea {
+  height:75px;
+  clear: both;
 }
 
 textarea {

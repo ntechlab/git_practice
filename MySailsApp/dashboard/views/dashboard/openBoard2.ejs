@@ -112,10 +112,7 @@
         $(this).addClass('selected');
       });
      sticky.find('#close').click(function(){
-     if(confirm("付箋を削除しますか？")){
-       var id = data["id"];
-       destroyTicket(id);
-     }
+       confirmDeleteTicket(data["id"]);
     });
     return sticky;
   }
@@ -139,6 +136,28 @@
     console.dir(newData);
     io.socket.get('/board/process/', newData);
   }
+
+function confirmDeleteTicket(id){
+  $("#confirmDeleteTicket").dialog({
+      modal: true,
+      resizable: false,
+      draggable: false,
+      open: function(){
+      	var focusButton = $(".ui-dialog-buttonset>button:nth-child(2)");
+      	focusButton.focus();
+      },
+      buttons: {
+        "はい": function() {
+          $(this).dialog("close");
+          destroyTicket(id);
+        },
+        "いいえ": function() {
+          $(this).dialog("close");
+          return false;
+        }
+      }
+    });
+}
 
   // jQueryオンロード処理
   $(function(){
@@ -201,7 +220,7 @@
         console.log("チケットを更新します:"+data["id"]+","+data["contents"]);
         $('#ta_'+data["id"]).val(data["contents"]);
         var $sticky = $(".sticky[data-id='"+data['id']+"']");
-　　　　$sticky.animate({'left': data["positionX"], 'top': data["positionY"]});
+        $sticky.animate({'left': data["positionX"], 'top': data["positionY"]});
 //        $sticky.css('left', data["positionX"]);
 //        $sticky.css('top', data["positionY"]);
         var ccc = data["contents"];
@@ -318,4 +337,11 @@ textarea {
 <% } %>
 </table>
 </form>
+</div>
+<!-- 付箋削除の確認ダイアログ -->
+<div id="confirmDeleteTicket" title="付箋削除の確認" style="display:none">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
+    付箋を削除します。よろしいですか？
+  </p>
 </div>

@@ -4,7 +4,11 @@
   }
   
   function back(){
+    <% if(loginInfo.roleName === 'admin') { %>
     submit("/usermanage/index");
+    <% } else { %>
+    submit("/dashboard/index");
+    <% } %>
   }
   
   function autotrim(items){
@@ -14,13 +18,29 @@
     }
   }
   
+  function extraCheck(){
+    var role = $('#role').val();
+    var valid = $('#valid').val();
+    if(role === '<%= role %>'
+      && valid === '<%= valid %>'){
+    	return true;
+    } else {
+    	return false;
+    }
+  }
+  
   // ユーザー更新
   function updateUser(){
     autotrim(["#username", "#nickname"]);
     var username = $('#username').val();
     var nickname = $('#nickname').val();
     var password = $('#password').val();
-	if(username === '<%= username %>' && nickname === '<%= nickname %>' && password.trim() === ''){
+	if(username === '<%= username %>'
+	 && nickname === '<%= nickname %>'
+<% if(loginInfo.roleName === 'admin') { %>
+	 && extraCheck()
+<% } %>
+	 && password.trim() === ''){
 		 $("#alertUpdate").dialog({
 	      modal: true,
 	      resizable: false,
@@ -42,9 +62,14 @@
 	
   }
   
+  function setPulldownValues() {
+  	$('#role').val('<%= role %>');
+  	$('#valid').val('<%= valid %>'); 
+  }
   
   function init(){
     setUpValidation();
+    setPulldownValues();
   }
   
   function setUpValidation(){
@@ -119,6 +144,24 @@
     <label for="nickname">ユーザー名</label>
     <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力" value="<%= nickname %>">
   </div>
+  
+  <% if(loginInfo != null && loginInfo.roleName === 'admin') {%>
+   <div class="form-group">
+    <label for="role">ロール</label>
+    <select class="form-control" name="role" id="role">
+    <option value="">一般</option>
+    <option value="admin">管理者</option>
+    </select>
+  </div>
+  
+   <div class="form-group">
+    <label for="valid">有効性</label>
+    <select class="form-control" name="valid" id="valid">
+    <option value="0">有効</option>
+    <option value="1">無効</option>
+    </select>
+  </div>
+  <% } %>
   <button type="submit" class="btn btn-default" onclick="return updateUser()" >更新</button>
   <input type="button" class="btn btn-default" onclick="back()" value="キャンセル" />
   <input type="hidden" name="target" value="<%= target %>" />

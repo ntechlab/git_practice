@@ -150,12 +150,21 @@ label.has-error {
               </a>
             </li>
             <li>
-              <a onclick="alert('TODO: 未実装')" tabindex=-1>
+              <a onclick="submit('/usermanage/openUpdateUser');" tabindex=-1>
                 <span class="hovereffect_light">
-                  <span class="glyphicon glyphicon-user"></span>&nbsp;<%= loginUserName %>
+                  <span class="glyphicon glyphicon-user"></span>&nbsp;<%= loginInfo.userName %><%= loginInfo.roleDesc %>
                 </span>
               </a>
             </li>
+            <% if(loginInfo != null && loginInfo.roleName === 'admin') {%>
+            <li>
+              <a onclick="submit('/usermanage/index');" tabindex=-1>
+              <span class="hovereffect_light">
+                <span class="glyphicon glyphicon glyphicon-cog"></span>&nbsp;ユーザー管理
+                </span>    
+              </a>
+            </li>
+            <% } %>
             <li>
               <a onclick="logout()" tabindex=-1>
               <span class="hovereffect_light">

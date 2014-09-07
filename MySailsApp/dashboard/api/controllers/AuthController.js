@@ -10,7 +10,14 @@ var passport = require("passport");
 module.exports = {
 	login : function(req, res) {
 		console.log("login action");
-		res.view("auth/login", {loginUserId :"", loginUserName :""});
+		res.view("auth/login", {
+			loginInfo: {
+				userId :"", 
+				userName :"", 
+				roleName:"", 
+				roleDesc:""
+			}
+		});
 	},
 
 	process : function(req, res) {
@@ -26,6 +33,7 @@ module.exports = {
 				}
 				console.log("login ok ");
 				req.session.passport["name"] = user[0]["nickname"];
+				req.session.passport["role"] = user[0]["role"];
 				return res.redirect('/dashboard');
 			});
 		})(req, res);
@@ -35,6 +43,7 @@ module.exports = {
 		req.logout();
 		if (req.session && req.session.passport) {
 			req.session.passport["name"] = "";
+			req.session.passport["role"] = "";
 		}
 		res.redirect('/login');
 	},

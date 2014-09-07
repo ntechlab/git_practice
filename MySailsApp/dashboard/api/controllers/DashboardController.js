@@ -8,15 +8,18 @@
 module.exports = {
 
     index : function(req, res) {
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	Board.find({}).exec(function(err,found){
-		res.view({list: found, loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
+		res.view({
+			list: found,
+			loginInfo: loginInfo
+		});
 	});
     },
 
     openBoard : function(req, res) {
 	var boardId = req.param("selectedId");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	console.log("selected boardId:"+boardId);
 
 	var wait = function (callbacks, done) {
@@ -70,12 +73,11 @@ module.exports = {
 		var createViewWrapper = function (){
 		    console.log("createViewWrapper called");
 		    var obj = {boardId: boardId, 
-		 	      loginUserId: loginUserInfo["id"],
-		 	      loginUserName: loginUserInfo["name"],
-		 	      title : found["title"], 
-		 	      description: found["description"],
-		 	      list : tickets}; 
-		    console.dir(obj);
+				loginInfo : loginInfo,
+				title : found["title"], 
+				description: found["description"],
+				list : tickets}; 
+				console.dir(obj);
     		    res.view(obj);
 		};
 
@@ -93,7 +95,7 @@ module.exports = {
 	    res.redirect("/dashboard/index");
 	    return;
 	}
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	console.log("selected boardId:"+boardId);
 
 	var wait = function (callbacks, done) {
@@ -146,15 +148,16 @@ module.exports = {
 		// ビュー生成関数のラッパー生成
 		var createViewWrapper = function (){
 		    console.log("createViewWrapper called");
-		    var obj = {boardId: boardId, 
-			      loginUserId: loginUserInfo["id"],
-			      loginUserName: loginUserInfo["name"],
-			      title : found["title"], 
-			      description: found["description"],
-			      ticketData : tickets,
-			      list : tickets}; 
-			    console.dir(obj);
-    		    res.view(obj);
+		    var obj = {
+				boardId: boardId, 
+				loginInfo: loginInfo,
+				title : found["title"], 
+				description: found["description"],
+				ticketData : tickets,
+				list : tickets
+			}; 
+			console.dir(obj);
+			res.view(obj);
 		};
 
 		// 同期処理実行
@@ -165,7 +168,7 @@ module.exports = {
 
     editBoard : function(req, res) {
 	var id = req.param("selectedId");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	console.log("selected id:"+id);
 	Board.findOne(id).exec(function(err,found){
 	    console.log("edit board:found["+found+"]");
@@ -173,8 +176,8 @@ module.exports = {
     	    res.view({ id: id, 
 		       title :found["title"], 
 		       description:found["description"],
-		       loginUserId: loginUserInfo["id"],
-		       loginUserName: loginUserInfo["name"]});
+		       loginInfo: loginInfo
+			});
     	});
     },
 

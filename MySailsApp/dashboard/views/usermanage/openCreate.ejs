@@ -94,6 +94,22 @@
     <label for="nickname">ユーザー名</label>
     <input class="form-control" name="nickname" id="nickname" placeholder="ユーザー名を入力してください。">
   </div>
+  
+   <div class="form-group">
+    <label for="role">ロール</label>
+    <select class="form-control" name="role" id="role">
+    <option value="">一般</option>
+    <option value="admin">管理者</option>
+    </select>
+  </div>
+  
+   <div class="form-group">
+    <label for="valid">有効性</label>
+    <select class="form-control" name="valid" id="valid">
+    <option value="0">有効</option>
+    <option value="1">無効</option>
+    </select>
+  </div>
   <button type="submit" class="btn btn-default" onclick="createUser()" >新規作成</button>
   <input type="button" class="btn btn-default" onclick="back()" value="キャンセル" />
 </form>

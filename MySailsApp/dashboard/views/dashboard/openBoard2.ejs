@@ -71,7 +71,7 @@
      positionY: y + "px",
      color: color,
      boardId : '<%= boardId %>',
-     userId : '<%= loginUserId %>'});
+     userId : '<%= loginInfo.userId %>'});
   }
 
   function make(data) {
@@ -308,7 +308,7 @@ textarea {
 
 <form method="POST">
   <input type="hidden" name="boardId" value="<%= boardId %>" />
-  <input type="hidden" name="userId" value="<%= loginUserId %>" />
+  <input type="hidden" name="userId" value="<%= loginInfo.userId %>" />
 <div>
   <div id="board" class="hasmenu">
 </div>

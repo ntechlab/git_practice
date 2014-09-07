@@ -22,7 +22,18 @@ module.exports = {
 			type : 'string',
 			required : true
 		},
-
+		role : {
+			type : 'string',
+			defaultsTo : ''
+		},
+		status : {
+			type : 'string',
+			defaultsTo : ''
+		},
+		flag1 : {
+			type : 'integer',
+			defaultsTo : 0
+		},
 		// Override toJSON method to remove password from API
 		toJSON : function() {
 			var obj = this.toObject();

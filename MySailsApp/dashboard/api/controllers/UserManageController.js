@@ -10,27 +10,33 @@ module.exports = {
 
     index : function(req, res) {
 	console.log("open UserManage");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
-	User.find({}).exec(function(err, usersFound) {
-            res.view({users: usersFound, loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
+	var loginInfo = Utility.getLoginInfo(req, res);
+	User.find({}).sort('username').exec(function(err, usersFound) {
+            res.view({users: usersFound, 
+            loginInfo: loginInfo
+		});
 	});
     },
 
     openCreate : function(req, res) {
 	console.log("openCreate called");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	User.find({}).exec(function(err, usersFound) {
-            res.view({users: usersFound,  loginUserId: loginUserInfo["id"], loginUserName: loginUserInfo["name"]});
+		res.view({users: usersFound,  
+			loginInfo: loginInfo
+		});
 	});
     },
 
     createUser : function(req, res) {
 	console.log("createUser called");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	User.create({
 	    username: req.param('username'),
 	    password: req.param('password'),
-	    nickname: req.param('nickname')
+	    nickname: req.param('nickname'),
+	    role: req.param('role'),
+	    flag1: req.param('valid')
 	}).exec(function(err, tickets) {
 	    User.find({}).exec(function(err, usersFound) {
 		res.redirect('/usermanage/index');
@@ -42,7 +48,7 @@ module.exports = {
 	console.log("destroyUser called");
 	var target = req.param('target');
 	if(target){
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	User.destroy(target).exec(function(err, found) {
 	    User.find({}).exec(function(err, usersFound) {
 		res.redirect('/usermanage/index');
@@ -55,14 +61,17 @@ module.exports = {
     },
 
     updateUser : function(req, res) {
+    // ユーザー一覧で指定されたID
 	var target = req.param('target');
 	console.log("User info changed:"+target);
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	User.findOne(target).exec(function(err, oldUser) {
 	    var newData = {};
 	    var newUsername = req.param('username');
 	    var newPassword = req.param('password');
 	    var newNickname = req.param('nickname');
+	    var role = req.param('role');
+	    var valid = req.param('valid');
 	    if(oldUser["username"] !== newUsername){
 		newData["username"] = newUsername;
 	    }
@@ -76,12 +85,23 @@ module.exports = {
 	    if(oldUser["nickname"] !== newNickname){
 		newData["nickname"] = newNickname;
 	    }
+	    
+	    if(role != null) {
+	    	newData["role"] = role;
+	    }
+	    if(valid != null) {
+	    	newData["flag1"] = valid;
+	    }
 	    console.dir(newData);
 	    User.update({id:target}, newData).exec(function(err, found) {
 		console.log("err:"+err);
 		console.log("found["+found +"]");
 		User.find({}).exec(function(err, usersFound) {
-		    res.redirect('/usermanage/index');
+			if(loginInfo["roleName"] === 'admin') {
+				res.redirect('/usermanage/index');
+			} else {
+				res.redirect('/dashboard/index');
+			}
 		});
 	    });
 	});
@@ -89,14 +109,19 @@ module.exports = {
 
     openUpdateUser : function(req, res) {
 	console.log("openUpdateUser called");
-	var loginUserInfo = Utility.getLoginUserId(req, res);
+	var loginInfo = Utility.getLoginInfo(req, res);
 	var id = req.param("target");
+	if(!id){
+		id = loginInfo["userId"];
+	}
 	User.findOne(id).exec(function(err, found){
-	    res.view({username: found["username"],
-		      nickname: found["nickname"],
-		      target: id,
-		      loginUserId: loginUserInfo["id"],
-		      loginUserName: loginUserInfo["name"]});
+				res.view({username: found["username"],
+				nickname: found["nickname"],
+				target: id,
+				loginInfo: loginInfo,
+				valid: found["flag1"],
+				role: found["role"]
+			});
 	});
     },
 };

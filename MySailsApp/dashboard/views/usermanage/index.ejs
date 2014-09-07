@@ -62,6 +62,8 @@
    <th>ID</th>
    <th>アカウント</th>
    <th>ユーザー名</th>
+   <th>ロール</th>
+   <th>有効・無効</th>
    <th>操作</th>
    </tr>
     <% for( var i in users ) {%>
@@ -69,9 +71,12 @@
        <td><%= users[i].id %></td>
        <td><%= users[i].username %></td>
        <td><%= users[i].nickname %></td>
+       <td><%= users[i].role %></td>
+       <td><% if(users[i].flag1 === 0) {%>有効<%} else { %>無効<% } %></td>
        <td>
          <span class="glyphicon glyphicon-pencil hovereffect_dark" onclick="openUpdateUser(<%= users[i].id %>)"></span>&nbsp;&nbsp;
-         <span class="glyphicon glyphicon-remove hovereffect_dark" onclick="destroyUser(<%= users[i].id %>)"></span> </td>
+         <span class="glyphicon glyphicon-remove hovereffect_dark" onclick="destroyUser(<%= users[i].id %>)"></span>
+       </td>
     </tr>
   <% } %>
   </table>

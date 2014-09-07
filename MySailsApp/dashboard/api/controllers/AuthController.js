@@ -9,7 +9,7 @@ var passport = require("passport");
 
 module.exports = {
 	login : function(req, res) {
-		console.log("login action");
+		sails.log("login action");
 		res.view("auth/login", {
 			loginInfo: {
 				userId :"", 

@@ -5,7 +5,12 @@
 適宜必要なパッケージをインストールする。<br/>
 dashboard直下で、npm installを実行、もしくは、既にダウンロードしたnode_modulesディレクトリをdashboard直下にコピーする。
 
-２．Sails起動<br/>
+２．デフォルト管理アカウントの設定<br/>
+MySailsApp/dashboard/config/bootstrap.js内のデフォルト管理アカウントを適宜修正。<br/>
+▲パスワードを平文として含むため取扱に注意。<br/>
+Sails.js起動時、指定したデフォルト管理アカウントが存在しない場合に作成する。<br/>
+
+３．Sails起動<br/>
 dashboard直下で以下のコマンドを実行：<br/>
 
 developmentモードで起動する場合：<br/>
@@ -16,13 +21,11 @@ productionモードで起動する場合：<br/>
 sails lift --prod<br/>
 （この場合、別途mongodbが起動している必要があります。下記、【mongodbの準備と利用方法】を参照。）<br/>
 
-３．ユーザー作成<br/>
-localhost:1337/user/create?username=ユーザー名&password=パスワード&nickname=ニックネーム<br/>
-を実行してユーザーを作成する。
-
 ４．ログイン<br/>
 localhost:1337/login<br/>
 にアクセスしてログインして、ボード作成、チケット作成などの機能を利用する。<br/>
+項目２で定義した値が管理アカウントの初期値となる。<br/>
+usernameがアカウント、passwordがパスワードに対応。<br/>
 
 ###【mongodbの準備と利用方法】
 

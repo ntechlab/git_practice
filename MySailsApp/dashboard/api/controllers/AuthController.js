@@ -27,7 +27,14 @@ module.exports = {
 				res.redirect('/login');
 				return;
 			}
+			// 無効ユーザーのアカウントが利用された場合には、ログイン画面に再度遷移する。
+			if(user[0]["flag1"] !== 0){
+				res.redirect('/login');
+				return;
+			}
 			req.logIn(user, function(err) {
+				
+				// エラーが発生した場合には、ログイン画面に再度遷移する。
 				if (err) {
 					res.redirect('/login');
 				}

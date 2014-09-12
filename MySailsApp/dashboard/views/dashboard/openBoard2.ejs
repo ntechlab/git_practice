@@ -74,6 +74,11 @@
      userId : '<%= loginInfo.userId %>'});
   }
 
+  function createTicketByButton() {
+    var type = $('#selectTicketType').val();
+    createTicket(10, 10, type);
+  }
+
   function make(data) {
    var val = data["contents"];
    var nickname = data["nickname"];
@@ -83,6 +88,7 @@
    sticky.find('.userInfo').text(nickname);
    sticky.find('.contentsArea').html(val);
    sticky.appendTo('#board')
+      .attr('id', "ticket_"+data["id"])
       .attr('data-id', data["id"])
       .addClass(data["color"])
       .animate({left: data["positionX"], top: data["positionY"] })
@@ -348,32 +354,49 @@ table th {
   <input type="hidden" name="boardId" value="<%= boardId %>" />
   <input type="hidden" name="userId" value="<%= loginInfo.userId %>" />
 <div>
+<div class="row">
+  <div style="width:200px;margin:10px;">
+    <div class="input-group">
+   <select id="selectTicketType" name="selectTicketType" class="form-control">
+     <option value="ticket_blue_pic">青</option>
+     <option value="ticket_yellow_pic">黄</option>
+     <option value="ticket_pink_pic">赤</option>
+   </select>
+      <div class="input-group-btn">
+        <button id="createTicketButton" type="button" class="btn btn-default" onclick="createTicketByButton();">作成</button>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
   <div id="board" class="hasmenu">
 </div>
 </div>
-<br><br>
-<table id="tickets" border="1">
-  <tr>
-    <th>ID</th>
-    <th>削除</th>
-    <th>更新</th>
-    <th>ボードID</th>
-    <th>ユーザーID</th>
-    <th>ニックネーム</th>
-    <th>内容</th>
-  </tr>
-<% for( var i in list ) {%>
-  <tr id="<%= list[i].id %>">
-     <td><%= list[i].id %></td>
-     <td><input type="button" onclick="destroyTicket(<%= list[i].id %>)" value="削除"/></td>
-     <td><input type="button" onclick="updateTicket(<%= list[i].id %>)" value="更新"/></td>
-     <td><%= list[i].boardId %></td>
-     <td><%= list[i].createUser %></td>
-     <td><%= list[i].nickname %></td>
-     <td><textarea id="ta_<%= list[i].id %>"><%= list[i].contents %></textarea></td>
-  </tr>
-<% } %>
-</table>
+<input type="button" style="margin:10px;" value="デバッグ情報" onclick="$('#debugTable').toggle();"/>
+<div id="debugTable" style="display:none">
+	<table id="tickets" border="1">
+	  <tr>
+	    <th>ID</th>
+	    <th>削除</th>
+	    <th>更新</th>
+	    <th>ボードID</th>
+	    <th>ユーザーID</th>
+	    <th>ニックネーム</th>
+	    <th>内容</th>
+	  </tr>
+	<% for( var i in list ) {%>
+	  <tr id="<%= list[i].id %>">
+	     <td><%= list[i].id %></td>
+	     <td><input type="button" onclick="destroyTicket(<%= list[i].id %>)" value="削除"/></td>
+	     <td><input type="button" onclick="updateTicket(<%= list[i].id %>)" value="更新"/></td>
+	     <td><%= list[i].boardId %></td>
+	     <td><%= list[i].createUser %></td>
+	     <td><%= list[i].nickname %></td>
+	     <td><textarea id="ta_<%= list[i].id %>"><%= list[i].contents %></textarea></td>
+	  </tr>
+	<% } %>
+	</table>
+</div>
 </form>
 </div>
 <!-- 付箋削除の確認ダイアログ -->

@@ -162,8 +162,8 @@
     </select>
   </div>
   <% } %>
-  <button type="submit" class="btn btn-default" onclick="return updateUser()" >更新</button>
-  <input type="button" class="btn btn-default" onclick="back()" value="キャンセル" />
+  <button type="submit" id="updateButton" class="btn btn-default" onclick="return updateUser()" >更新</button>
+  <input type="button" id="cancelButton" class="btn btn-default" onclick="back()" value="キャンセル" />
   <input type="hidden" name="target" value="<%= target %>" />
 </form>
 </div>

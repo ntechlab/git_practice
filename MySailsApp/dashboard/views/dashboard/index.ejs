@@ -69,11 +69,11 @@ $(function(){
 <% } %>
 </select>
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">操作&nbsp;<span class="caret"></span></button>
+        <button id="action" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">操作&nbsp;<span class="caret"></span></button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          <li><a onclick="openBoard2()">開く</a></li>
-          <li><a onclick="editBoard()">編集</a></li>
-          <li><a onclick="return deleteBoard()">削除</a></li>
+          <li><a id="action_open" onclick="openBoard2()">開く</a></li>
+          <li><a id="action_edit"  onclick="editBoard()">編集</a></li>
+          <li><a id="action_delete"  onclick="return deleteBoard()">削除</a></li>
         </ul>
       </div><!-- /btn-group -->
     </div><!-- /input-group -->

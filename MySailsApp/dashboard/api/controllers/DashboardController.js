@@ -144,6 +144,16 @@ module.exports = {
 		    }(i);
 		    console.log("ループ[" + i + "] 終了");
 		};
+		var boardList;
+		prerequisite.push(function(next) {
+		    Board.find().where({ id: { 'not': boardId }}).exec(function(err, boards) {
+			boardList = boards || [];
+
+			// コールバック関数終了時にnext()を呼び出す。
+			next();
+		    });
+		})
+			
 
 		// ビュー生成関数のラッパー生成
 		var createViewWrapper = function (){
@@ -154,6 +164,7 @@ module.exports = {
 				title : found["title"], 
 				description: found["description"],
 				ticketData : tickets,
+				boardList : boardList,
 				list : tickets
 			}; 
 			console.dir(obj);

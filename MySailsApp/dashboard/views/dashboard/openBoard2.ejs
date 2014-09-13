@@ -165,25 +165,82 @@ function confirmDeleteTicket(id){
     });
 }
 
+// 付箋移動処理
+function moveTicket(ticketId, dstBoardId){
+	console.log('ticketid['+ticketId+']');
+	var newData = {};
+    newData["actionType"] = "move";
+    newData["boardId"] = '<%= boardId %>';
+    newData["dstBoardId"] = dstBoardId;
+    newData["id"] = ticketId;
+    newData["nickname"] = '<%= loginInfo.userName %>';
+    io.socket.get('/board/process/', newData);
+
+}
+
+function showMoveTicketDialog(ticketId){
+  $("#selectBoardDialog").dialog({
+      modal: true,
+      resizable: false,
+      draggable: false,
+      buttons: {
+        "移動": function() {
+          $(this).dialog("close");
+          var dstBoardId = $('#dstBoardId').val();
+          moveTicket(ticketId, dstBoardId);
+        },
+        "キャンセル": function() {
+          $(this).dialog("close");
+          return false;
+        }
+      }
+    });
+}
+
+
   // jQueryオンロード処理
   $(function(){
 
   $("body").contextmenu({
     delegate: ".hasmenu",
-    menu: [
-        {title: "作成", children: [
-            {title: "青", cmd: "ticket_blue_pic"},
-            {title: "黄", cmd: "ticket_yellow_pic"},
-            {title: "赤", cmd: "ticket_pink_pic"}
-            ]}
-        ],
+    ticketId : undefined,
+    menu: [],
+        beforeOpen: function(event, ui) {
+        var $menu = ui.menu,
+            $target = ui.target,
+            var sticky = $target.closest('.sticky');
+			console.log("sticky:["+sticky.html()+"]");
+            if(sticky.html() != undefined){
+            	ticketId = sticky.attr('data-id');
+            	  $("body").contextmenu("replaceMenu",
+            	   [{title: "移動", cmd: "move"}]);
+            } else {
+            	 $("body").contextmenu("replaceMenu", 
+            	   [
+                     {title: "作成", children: [
+				            {title: "青", cmd: "ticket_blue_pic"},
+				            {title: "黄", cmd: "ticket_yellow_pic"},
+				            {title: "赤", cmd: "ticket_pink_pic"}
+			            ]
+			         }
+			       ]
+			     );
+	        }
+    },
+        
     select: function(event, ui) {
-        var $menu=$('#ui-id-1');
+    	var cmd = ui.cmd;
+    	console.log("CMD:["+cmd+"]");
+    	if(cmd === "move"){
+    		showMoveTicketDialog(ticketId);
+    	} else {
+	        var $menu = $('ul.ui-menu');
         var top = $('#board').offset().top;
         var left = $('#board').offset().left;
         var posX = $menu.offset().left - left;
         var posY = $menu.offset().top - top;
 	createTicket(posX, posY, ui.cmd);
+    }
     }
   });
 
@@ -404,5 +461,15 @@ table th {
   <p>
     <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
     付箋を削除します。よろしいですか？
+  </p>
+</div>
+<!-- 移動先ボード選択ダイアログ -->
+<div id="selectBoardDialog" title="移動先ボード選択" style="display:none">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 30px 0;"></span>
+    移動先ボードを選択してください。
+    <select id="dstBoardId" style="width:100%">
+    <% for( var i in boardList ) {%><option value="<%= boardList[i].id %>"><%= boardList[i].title %></option><% } %>
+    </select>
   </p>
 </div>

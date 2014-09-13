@@ -120,6 +120,32 @@ module.exports = {
                contents: updated[0].contents });
          }
       });
+    } else if (actionType == "move") {
+      var dstBoardId = req.param('dstBoardId');
+      var ticketId = req.param('id');
+      var nickname = req.param('nickname');
+      Ticket.update({
+        id: id
+      }, {
+        boardId : dstBoardId
+      }).exec(function update(err, updated){
+        if(updated && updated[0]){
+           var ticket = updated[0];
+           io.sockets.in(roomName).emit('message',{action: "destroyed", id : id});
+           io.sockets.in("room_" + dstBoardId).emit('message',
+		    {
+			    action: "created",
+				id: id, 
+				contents: ticket.contents,
+				boardId: ticket.boardId,
+				createUser : ticket.createUser,
+				positionX: ticket.positionX,
+				positionY: ticket.positionY,
+				color: ticket.color,
+				nickname : nickname
+			});
+		}
+      })    
     }
   }
 

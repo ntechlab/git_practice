@@ -74,8 +74,8 @@
        <td><%= users[i].role %></td>
        <td><% if(users[i].flag1 === 0) {%>有効<%} else { %>無効<% } %></td>
        <td>
-         <span class="glyphicon glyphicon-pencil hovereffect_dark" onclick="openUpdateUser(<%= users[i].id %>)"></span>&nbsp;&nbsp;
-         <span class="glyphicon glyphicon-remove hovereffect_dark" onclick="destroyUser(<%= users[i].id %>)"></span>
+         <span class="glyphicon glyphicon-pencil hovereffect_dark" onclick='openUpdateUser("<%= users[i].id %>")'></span>&nbsp;&nbsp;
+         <span class="glyphicon glyphicon-remove hovereffect_dark" onclick='destroyUser("<%= users[i].id %>")'></span>
        </td>
     </tr>
   <% } %>

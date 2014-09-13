@@ -8,15 +8,17 @@
 module.exports = {
 
     index : function(req, res) {
+    sails.log.debug("action: BoardController.index");
 	res.view();
     },
     
     createBoard : function(req, res) {
 	var title = req.param('title');
-	console.log("create board:["+title+"]");
+    sails.log.debug("action: BoardController.createBoard[" + title + "]");
 	title = title.trim();
 	if(!title || title.length == 0){
-	  console.log("トリム後のタイトルが空のため処理を中断");
+	  // TODO: エラー処理
+	  sails.log.debug("トリム後のタイトルが空のため処理を中断");
 	  res.redirect("/dashboard/index");
 	}
 	Board.create({
@@ -28,8 +30,9 @@ module.exports = {
     },
     
     updateBoard : function(req, res) {
-	console.log("update board:"+req.param('id'));
-	Board.update(req.param('id'), {
+	    var boardId = req.param('id');
+        sails.log.debug("action: BoardController.updateBoard[" + boardId + "]");
+	Board.update(boardId, {
 	    title:req.param('title'), 
 	    description : req.param('description')
 	}).exec(function(err,created){
@@ -39,27 +42,29 @@ module.exports = {
   
   register : function(req, res) {
     var boardId = req.param('boardId');
-    console.log("リスナ登録:["+boardId+"]");
+    sails.log.debug("action: BoardController.register[" + boardId + "]");
     var socket = req.socket;
     var io = sails.io;
     
     // リスナ登録
+    sails.log.debug("リスナ登録:socket.join[" + socket + ":" + boardId+"]");
     socket.join('room_'+boardId+'_');
   },
   
   // チケットの作成、削除、更新処理アクション
   process : function(req, res) {
+    sails.log.debug("action: BoardController.process");
     var socket = req.socket;
     var io = sails.io;
     var actionType = req.param('actionType');
     var id = req.param('id');
     var boardId = req.param('boardId');
     var roomName = "room_"+boardId+"_";
-    console.log("roomName["+roomName+"]");
-    console.log("チケット処理：id=" + id + ",actionType=" + actionType);
+    sails.log.debug(socket + ":roomName["+roomName+"]");
+    sails.log.debug("チケット処理：id=" + id + ",actionType=" + actionType);
     if (actionType == "create") {
-      console.log("チケット作成");
       var userId = req.param('userId');
+      sails.log.debug("チケット作成["+userId+"]");
       User.findOne(userId).exec(function(err, foundUser) {
 	    Ticket.create({
 		boardId : boardId,
@@ -70,9 +75,10 @@ module.exports = {
 		color : req.param('color')
 	    }).exec(function(err, ticket) {
 		if (err) {
+			// TODO: エラー通知方法検討
 		    return console.log(err);
 		} else {
-		    console.log("チケットを作成しました：", ticket);
+		    sails.log.debug("チケットを作成しました："+ JSON.stringify(ticket));
 		    io.sockets.in(roomName).emit('message',
 		    {
 		    action: "created",
@@ -88,7 +94,7 @@ module.exports = {
 	    });
 	});
     } else if (actionType == "destroy") {
-      console.log("チケット削除:" + id);
+      sails.log.debug("チケット削除:" + id);
       Ticket.findOne({
         id : id
       }).exec(function(err, found) {
@@ -102,7 +108,7 @@ module.exports = {
         var x = req.param('positionX');
         var y = req.param('positionY');
         var contents = req.param('contents');
-        console.log("チケット更新:" + id + ", " + x+","+y+","+contents);
+        sails.log.debug("チケット更新:" + id + ", " + x+","+y+","+contents);
         Ticket.update({
           id : id
         }, {
@@ -124,6 +130,7 @@ module.exports = {
       var dstBoardId = req.param('dstBoardId');
       var ticketId = req.param('id');
       var nickname = req.param('nickname');
+      sails.log.debug("チケット移動:["+ticketId + "][" + dashBoardId + "][" + nickname + "]");
       Ticket.update({
         id: id
       }, {

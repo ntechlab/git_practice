@@ -8,11 +8,13 @@ function openBoard(){
 }
 
 function openBoard2(){
-    submit("/dashboard/openBoard2");
+	var selectedId = $('#selectedId').val();
+    submit("/dashboard/openBoard2/" + selectedId);
 }
 
 function editBoard(){
-    submit("/dashboard/editBoard");
+	var selectedId = $('#selectedId').val();
+    submit("/dashboard/editBoard/" + selectedId);
 }
 
 function deleteBoard(){
@@ -27,7 +29,8 @@ function deleteBoard(){
       buttons: {
         "はい": function() {
           $(this).dialog("close");
-          submit("/dashboard/deleteBoard");
+          var selectedId = $('#selectedId').val();
+          submit("/dashboard/deleteBoard/" + selectedId);
         },
         "いいえ": function() {
           $(this).dialog("close");

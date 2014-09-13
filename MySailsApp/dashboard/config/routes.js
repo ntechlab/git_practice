@@ -36,6 +36,9 @@ module.exports.routes = {
 	'get /login': "AuthController.login",
 	'post /login': 'AuthController.process',
 	'get /logout': 'AuthController.logout',
+	'get /dashboard/openBoard2/:selectedId': 'DashboardController.openBoard2',
+	'get /dashboard/editBoard/:selectedId': 'DashboardController.editBoard',
+	'get /dashboard/deleteBoard/:selectedId': 'DashboardController.deleteBoard'
 
   /***************************************************************************
   *                                                                          *

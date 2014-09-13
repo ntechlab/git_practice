@@ -207,7 +207,7 @@ function showMoveTicketDialog(ticketId){
     menu: [],
         beforeOpen: function(event, ui) {
         var $menu = ui.menu,
-            $target = ui.target,
+            $target = ui.target;
             var sticky = $target.closest('.sticky');
 			console.log("sticky:["+sticky.html()+"]");
             if(sticky.html() != undefined){

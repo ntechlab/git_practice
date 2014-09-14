@@ -130,7 +130,7 @@ module.exports = {
       var dstBoardId = req.param('dstBoardId');
       var ticketId = req.param('id');
       var nickname = req.param('nickname');
-      sails.log.debug("チケット移動:["+ticketId + "][" + dashBoardId + "][" + nickname + "]");
+      sails.log.debug("チケット移動:["+ticketId + "][" + dstBoardId + "][" + nickname + "]");
       Ticket.update({
         id: id
       }, {

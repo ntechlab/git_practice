@@ -14,13 +14,13 @@ function openUserManageIndexPage(req, res, message){
 	// 管理者以外がユーザー管理画面を開こうとした場合には、メッセージを表示して、メイン画面に遷移する。
 	var loginInfo = Utility.getLoginInfo(req, res);
 	if(message){
-		loginInfo.message_area = message;
+		loginInfo.message = message;
 	}
 	if(loginInfo["roleName"] === "admin"){
 		User.find({}).sort('username').exec(function(err, usersFound) {
 			if(err || !usersFound){
 				sails.log.error("ユーザー管理画面オープン時にエラー発生:" + JSON.stringify(err));
-				loginInfo.message_area = "システムエラーが発生しました。";
+				loginInfo.message = {type: "danger", contents: "システムエラーが発生しました。"};
 				usersFound = [];
 			}
 	        res.view("usermanage/index", {
@@ -29,7 +29,7 @@ function openUserManageIndexPage(req, res, message){
 			});
 		});
 	} else {
-		Utility.openMainPage(req, res, "ユーザー管理画面にアクセスできません。");
+		Utility.openMainPage(req, res, {type: "warn", contents:"ユーザー管理画面にアクセスできません。"});
 	}
 };
 
@@ -52,7 +52,7 @@ module.exports = {
 		
 		// 管理者のみはユーザー作成画面を開くことができる。
 		if(loginInfo["roleName"] !== "admin"){
-			Utility.openMainPage(req, res, "ユーザーを作成できません。");
+			Utility.openMainPage(req, res, {type: "warn", contents: "ユーザーを作成できません。"});
 			return;
 		}
 		res.view({
@@ -75,7 +75,7 @@ module.exports = {
 		
 		// 管理者のみユーザーを作成できる。
 		if(loginInfo["roleName"] !== "admin"){
-			Utility.openMainPage(req, res, "ユーザーを作成できません。");
+			Utility.openMainPage(req, res, {type: "warn", contents: "ユーザーを作成できません。"});
 			return;
 		}
 		
@@ -91,7 +91,7 @@ module.exports = {
 			if(err){
 				// エラー発生時には入力値を保持したまま、ユーザー作成画面を再表示する。
 				sails.log.error("エラー発生:" + JSON.stringify(err));
-				loginInfo.message_area = "システムエラーが発生しました。";
+				loginInfo.message = {type : "danger", contents : "システムエラーが発生しました。"};
 				res.view("usermanage/openCreate", { 
 					username: req.param('username'),
 					nickname: req.param('nickname'),
@@ -104,7 +104,7 @@ module.exports = {
 				return;
 			}
 			// 正常終了の場合、ユーザー管理画面に遷移する。
-			openUserManageIndexPage(req, res, "ユーザーを作成しました。");
+			openUserManageIndexPage(req, res, {type: "success", contents: "ユーザーを作成しました。"});
 		});
     },
 
@@ -118,7 +118,7 @@ module.exports = {
 		
 		// 管理者のみユーザーを削除することができる。
 		if(loginInfo["roleName"] !== "admin"){
-			Utility.openMainPage(req, res, "ユーザーを削除できません。");
+			Utility.openMainPage(req, res, {type: "warn", contents: "ユーザーを削除できません。"});
 			return;
 		}
 		
@@ -132,10 +132,10 @@ module.exports = {
 				if(err || !obj || obj.length === 0){
 					// 削除処理に失敗した場合には、ユーザ一覧画面に遷移する。
 					sails.log.error("ユーザーの削除処理に失敗[" + JSON.stringify(err) + "]");
-					openUserManageIndexPage(req, res, "ユーザー削除処理に失敗しました。");
+					openUserManageIndexPage(req, res, {type:"danger", contents:"ユーザー削除処理に失敗しました。"});
 					return;
 				}
-				openUserManageIndexPage(req, res, "ユーザー" + obj[0]["username"] + "(" + obj[0]["nickname"] + ")を削除しました。");
+				openUserManageIndexPage(req, res, {type: "success", contents: "ユーザー" + obj[0]["username"] + "(" + obj[0]["nickname"] + ")を削除しました。"});
 			});
 		} else {
 			sails.log.debug("削除ユーザーIDが未設定のため処理を行わない。");
@@ -156,7 +156,7 @@ module.exports = {
 		// ユーザーIDが未設定、もしくは、管理者以外が自分以外のユーザー情報の更新を試みた場合にはエラーとする。
 		// (利用するDBによってはIDが数値となるため、いったん文字列に変換してから判定する。)
 		if(!target || (loginInfo["roleName"] !== "admin" && String(target) != String(loginInfo["id"]))){
-			Utility.openMainPage(req, res, "更新対象ユーザーIDが不正です");
+			Utility.openMainPage(req, res, {type: "warn", contents: "更新対象ユーザーIDが不正です"});
 			return;
 		}
 		
@@ -168,7 +168,7 @@ module.exports = {
 			// （検索結果が存在しない場合には、targetはundefinedが設定される。）
 			if(err || !oldUser){
 				sails.log.error("ユーザー更新処理に失敗[" + JSON.stringify(err) + "]");
-				openUserManageIndexPage(req, res, "ユーザの更新に失敗しました。");
+				openUserManageIndexPage(req, res, {type:"danger", contents: "ユーザの更新に失敗しました。"});
 				return;
 			}
 			
@@ -210,7 +210,7 @@ module.exports = {
 				if(err) {
 					sails.log.error("ユーザー情報更新時にエラー発生:" + JSON.stringify(err));
 					// TODO: エラーメッセージの内容を検討する。
-					loginInfo.message_area = "システムエラーが発生しました。"+JSON.stringify(err);
+					loginInfo.message = {type: "danger", contents: "システムエラーが発生しました。"+JSON.stringify(err)};
 					res.view("usermanage/openCreate", { 
 						username: req.param('username'),
 						nickname: req.param('nickname'),
@@ -223,7 +223,7 @@ module.exports = {
 					return;
 				}
 				
-				var message = "ユーザー情報を更新しました。";
+				var message = {type:"success", contents: "ユーザー情報を更新しました。"};
 				var role = loginInfo["roleName"];
 				var next;
 				if(role === 'admin') {
@@ -247,7 +247,7 @@ module.exports = {
 		// (利用するDBによってはIDが数値となるため、いったん文字列に変換してから判定する。)
 		if(!id || (loginInfo["roleName"] !== "admin" && String(id) !== String(loginInfo["id"]))){
 			// 管理者以外は他ユーザーのユーザー情報を更新することができない。
-			Utility.openMainPage(req, res, "更新対象ユーザーIDが不正です");
+			Utility.openMainPage(req, res, {type: "warn", contents: "更新対象ユーザーIDが不正です"});
 			return;
 		}
 		
@@ -255,7 +255,7 @@ module.exports = {
 			sails.log.debug("ユーザー情報取得結果:" + JSON.stringify(found));
 			if(err || !found) {
 				sails.log.error("ユーザー情報更新画面オープン失敗:" + JSON.stringify(err));
-				Utility.openMainPage(req, res, "ユーザー情報更新画面の表示に失敗");
+				Utility.openMainPage(req, res, {type: "danger", contents: "ユーザー情報更新画面の表示に失敗"});
 				return;
 			}
 			res.view({username: found["username"],

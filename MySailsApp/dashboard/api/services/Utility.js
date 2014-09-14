@@ -19,13 +19,13 @@ exports.openMainPage = function(req, res, message){
 	sails.log.debug("Utility.openMainPage[" + message + "]");
 	var loginInfo = Utility.getLoginInfo(req, res);
 	if(message){
-		loginInfo.message_area = message;
+		loginInfo.message = message;
 	}
 	Board.find({}).exec(function(err,found){
 		if(err){
 			sails.log.error("メイン画面オープン時にエラー発生[" + JSON.stringify(err) +"]");
 			found = [];
-			loginInfo.message_area = "エラー発生:"+JSON.stringify(err);
+			loginInfo.message = {type: "danger", contents: "エラー発生:"+JSON.stringify(err)};
 		}
 		res.view("dashboard/index", {
 			list: found,

@@ -63,8 +63,14 @@
   }
   
   function setPulldownValues() {
-  	$('#role').val('<%= role %>');
-  	$('#valid').val('<%= valid %>'); 
+	var role = '<%= role %>';
+	var valid = '<%= valid %>';
+	if(role !== ''){
+		$('#role').val(role);
+	}
+	if(valid != ''){
+		$('#valid').val(valid); 
+	}
   }
   
   function init(){

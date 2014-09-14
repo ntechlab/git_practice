@@ -77,7 +77,6 @@ label.has-error {
   color: #FF7F50;
   margin:3px;
 }
-
 </style>
 <script>
   function home(){
@@ -150,7 +149,7 @@ label.has-error {
               </a>
             </li>
             <li>
-              <a onclick="submit('/usermanage/openUpdateUser');" id="headerUserName" tabindex=-1>
+              <a onclick="location.href='/usermanage/openUpdateUser/<%= loginInfo.id %>'" id="headerUserName" tabindex=-1>
                 <span class="hovereffect_light">
                   <span class="glyphicon glyphicon-user"></span>&nbsp;<%= loginInfo.userName %><%= loginInfo.roleDesc %>
                 </span>
@@ -176,7 +175,13 @@ label.has-error {
         </div><!--/.nav-collapse -->
       </div>
     </div>
-    
+     <% if(loginInfo.message_area) {%>
+      <div class="row">
+        <div class="col-sm-offset-1 col-sm-10">
+          <div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<%= loginInfo.message_area %></div>
+        </div>
+      </div>
+      <% } %>
     <%- body %>
 
     <!--

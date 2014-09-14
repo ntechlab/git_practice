@@ -38,7 +38,12 @@ module.exports.routes = {
 	'get /logout': 'AuthController.logout',
 	'get /dashboard/openBoard2/:selectedId': 'DashboardController.openBoard2',
 	'get /dashboard/editBoard/:selectedId': 'DashboardController.editBoard',
-	'get /dashboard/deleteBoard/:selectedId': 'DashboardController.deleteBoard'
+	'get /dashboard/deleteBoard/:selectedId': 'DashboardController.deleteBoard',
+	'get /usermanage/destroyUser/:target': 'UsermanageController.destroyUser', // 暫定。利用しない予定（URLに削除後のユーザーIDを残したくない）
+	'post /usermanage/destroyUser/:target': 'UsermanageController.destroyUser', // 暫定。
+	'get /usermanage/updateUser/:target': 'UsermanageController.updateUser', // 暫定
+	'get /usermanage/openUpdateUser/:target': 'UsermanageController.openUpdateUser', // OK
+	//'post /usermanage/openUpdateUser/:target': 'UsermanageController.openUpdateUser' // 利用しない(URLで識別できる形にしておく）
 
   /***************************************************************************
   *                                                                          *

@@ -47,8 +47,7 @@
   // ユーザー更新
   function openUpdateUser(id){
     console.log("openUpdateUser:"+id);
-    $('#target').val(id);
-    submit("/usermanage/openUpdateUser");
+    location.href="/usermanage/openUpdateUser/" + id;
   }
 </script>
 <div class="container theme-showcase" role="main">

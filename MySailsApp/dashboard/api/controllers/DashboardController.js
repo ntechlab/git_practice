@@ -7,15 +7,20 @@
 
 module.exports = {
 
+	/**
+	 * ボード一覧画面を開く
+	 */
     index : function(req, res) {
 	    sails.log.debug("action: DashboardController.index");
 		var loginInfo = Utility.getLoginInfo(req, res);
+		var message;
 		Board.find({}).exec(function(err,found){
 			if(err){
 				sails.log.error("メイン画面オープン時にエラー発生[" + JSON.stringify(err) +"]");
 				found = [];
-				// TODO: エラーをユーザーに通知する方法を検討する。
+				message = {type: "danger", contents: "メイン画面の表示に失敗しました: "+JSON.stringify(err)};				
 			}
+			loginInfo.message = message;
 			res.view({
 				list: found,
 				loginInfo: loginInfo
@@ -23,15 +28,20 @@ module.exports = {
 		});
     },
     
+    /**
+     * ボード画面を開く
+     */
     openBoard2 : function(req, res) {
 	var boardId = req.param("selectedId");
     sails.log.debug("action: DashboardController.openBoard2["+boardId+"]");
+	var loginInfo = Utility.getLoginInfo(req, res);
+    var message = null;
 	if(!boardId){
 	    sails.log.debug("ボードIDが存在しないためボード選択画面に遷移。");
-	    res.redirect("/dashboard/index");
+		message = {type: "warn", contents: "ボードIDが指定されていません。"};
+		Utility.openMainPage(req, res, message);
 	    return;
 	}
-	var loginInfo = Utility.getLoginInfo(req, res);
 
 	var wait = function (callbacks, done) {
 		var counter = callbacks.length;
@@ -52,12 +62,15 @@ module.exports = {
 	Board.findOne(boardId).exec(function(err,found){
 		if(err){
 			sails.log.error("エラー発生: " + JSON.stringify(err));
-		    res.redirect("/dashboard/index");
+		    message = {type: "danger", contents: "エラーが発生しました: " + JSON.stringify(err)};
+			Utility.openMainPage(req, res, message);
+			return;
 		}
 		if(!found) {
 			sails.log.error("指定されたボードIDが存在しないため、ボード選択画面に遷移[" + boardId + "]");
-		    res.redirect("/dashboard/index");
-		    return;
+			message = {type: "warn", contents: "指定したボードIDが存在しません[" + boardId + "]"};
+			Utility.openMainPage(req, res, message);
+			return;
 	    }
 	    Ticket.find({boardId : boardId}).exec(function(err2, tickets) {
 
@@ -98,6 +111,9 @@ module.exports = {
 				if(err4) {
 					sails.log.error("ボードリストの取得: エラー発生: " + JSON.stringify(err4));
 					boardList = [];
+					message = {type: "danger", contents: "エラーが発生しました: " + JSON.stringify(err4)};
+					Utility.openMainPage(req, res, message);
+					return;
 				} else {
 					boardList = boards || [];
 				}
@@ -128,6 +144,9 @@ module.exports = {
     	});
     },
 
+	/**
+	 * ボード情報変更画面を開く
+	 */
     editBoard : function(req, res) {
 		var id = req.param("selectedId");
 	    sails.log.debug("action: DashboardController.editBoard["+id+"]");
@@ -135,7 +154,7 @@ module.exports = {
 		Board.findOne(id).exec(function(err,found){
 		    if(err || !found) {
 				sails.log.error("ボード編集時 ボード取得失敗: エラー発生:[" + found + "]:" + JSON.stringify(err));
-				res.redirect('/dashboard/index');
+				Utility.openMainPage(req, res, {type: "danger", contents: "エラーが発生しました:"+JSON.stringify(err)});
 				return;
 			} else {
 				sails.log.debug("編集対象ボード[" + JSON.stringify(found) + "]");
@@ -148,25 +167,36 @@ module.exports = {
     	});
     },
 
+	/**
+	 * ボード削除処理
+	 */
     deleteBoard : function(req, res) {
 		var id = req.param("selectedId");
 		sails.log.debug("action: DashboardController.deleteBoard["+id+"]");
 		// 削除対象ボードIDが設定されていない場合には、処理を行わずメイン画面に遷移。
+		var message = null;
 		if(id != null){
 			Board.destroy(id).exec(function(err, found){
 				sails.log.debug("ボード削除 削除対象[" + JSON.stringify(found) + "]");
-				if(err) {
+				if(err || (found && found.length === 0)) {
 					sails.log.error("ボード削除時: エラー発生:" + JSON.stringify(err));
+					message = {type: "danger", contents: "ボード削除に失敗しました[" + id + "]:" + JSON.stringify(err)};
 				} else {
 					sails.log.info("ボード削除：正常終了[" + id + "]");
+					message = {type: "success", contents: "ボードを削除しました: [" + found[0]["title"] + "]"};
 				}
+				Utility.openMainPage(req, res, message);
 			});
 		} else {
-			sails.log.info("ボード削除：ボードID未設定");	
+			sails.log.info("ボード削除：ボードID未設定");
+			message = {type: "danger", contents: "ボードIDが設定されていません。"};
+			Utility.openMainPage(req, res, message);
 		}
-    	res.redirect('/dashboard/index');
     },
     
+    /**
+     * ボード作成画面を開く
+     */
     createBoard : function(req, res) {
 		sails.log.debug("action: DashboardController.createBoard");
     	res.redirect('/newboard/index');

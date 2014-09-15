@@ -6,40 +6,67 @@
  */
 
 module.exports = {
-
-    index : function(req, res) {
-    sails.log.debug("action: BoardController.index");
-	res.view();
-    },
-    
+  
+    /**
+     * ボード作成
+     */
     createBoard : function(req, res) {
 	var title = req.param('title');
     sails.log.debug("action: BoardController.createBoard[" + title + "]");
 	title = title.trim();
 	if(!title || title.length == 0){
-	  // TODO: エラー処理
 	  sails.log.debug("トリム後のタイトルが空のため処理を中断");
-	  res.redirect("/dashboard/index");
+	  Utility.openMainPage(req, res, {type: "danger", contents: "ボードの作成に失敗しました。"});
+	  return;
 	}
 	Board.create({
 	    title: title, 
 	    description : req.param('description')
-	}).exec(function(err,created){
-	    res.redirect("/dashboard/index");
+	}).exec(function(err, created){
+		if(err) {
+			sails.log.error("ボードの作成に失敗しました: " + JSON.stringify(err));
+			var loginInfo = Utility.getLoginInfo(req, res);
+			loginInfo.message = {type: "danger", contents: "ボードの作成に失敗しました: " + JSON.stringify(err)};
+			res.view("newboard/index", {
+				loginInfo: loginInfo,
+				title: req.param("title"),
+				desc: req.param('description')
+			});
+		    return;
+		}
+		Utility.openMainPage(req, res, {type: "success", contents: "ボードを作成しました。"});
 	});
     },
     
+    /**
+     * ボード情報更新
+     */
     updateBoard : function(req, res) {
 	    var boardId = req.param('id');
         sails.log.debug("action: BoardController.updateBoard[" + boardId + "]");
-	Board.update(boardId, {
-	    title:req.param('title'), 
-	    description : req.param('description')
-	}).exec(function(err,created){
-	    res.redirect("/dashboard/index");
-	});
+		Board.update(boardId, {
+		    title:req.param('title'), 
+		    description : req.param('description')
+		}).exec(function(err,created){
+			if(err) {
+				sails.log.error("ボード情報の更新に失敗しました: " + JSON.stringify(err));
+				var loginInfo = Utility.getLoginInfo(req, res);
+				loginInfo.message = {type: "danger", contents: "ボード情報の更新に失敗しました: " + JSON.stringify(err)};
+				res.view("dashboard/editBoard", {
+					id: boardId,
+					loginInfo: loginInfo,
+					title: req.param("title"),
+					description: req.param('description')
+				});
+			    return;
+			}
+			Utility.openMainPage(req, res, {type: "success", contents: "ボード情報を更新しました。"});
+		});
     },
   
+	/**
+	 * リスナ登録
+	 */
   register : function(req, res) {
     var boardId = req.param('boardId');
     sails.log.debug("action: BoardController.register[" + boardId + "]");
@@ -51,7 +78,9 @@ module.exports = {
     socket.join('room_'+boardId+'_');
   },
   
-  // チケットの作成、削除、更新処理アクション
+	/**
+	 * チケットの作成、削除、更新処理アクション
+	 */
   process : function(req, res) {
     sails.log.debug("action: BoardController.process");
     var socket = req.socket;

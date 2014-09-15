@@ -8,10 +8,11 @@
 module.exports = {
     
     index : function(req, res) {
-    
-	var loginInfo = Utility.getLoginInfo(req, res);
-	res.view({
-		loginInfo: loginInfo
+		var loginInfo = Utility.getLoginInfo(req, res);
+		res.view("newboard/index", {
+			loginInfo: loginInfo,
+			title: "",
+			desc: ""
 		});
     }
 };

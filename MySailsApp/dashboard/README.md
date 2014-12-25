@@ -53,7 +53,6 @@ db.ticket.find()<br/>
 db.ticket.insert({name:'name01', message:'MESSAGE01', ...});
 
 ###ライセンス
-----------
 Copyright &copy; 2014 New Technology Workshop<br>
 Licensed under the MIT License.<br>
 http://www.opensource.org/licenses/mit-license.php
